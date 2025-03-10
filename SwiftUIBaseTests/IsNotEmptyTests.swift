@@ -16,7 +16,7 @@ struct IsNotEmptyTests {
             #expect( arg.isNotEmpty == !arg.isEmpty )
         }
 
-        @Test( "IsNotEmpty : String", arguments: [ "" , "FOO" ] )
+        @Test( "HasCharacters : String", arguments: [ "" , "FOO" ] )
         func testHasCharacters( arg: String ) async throws {
             #expect( arg.hasCharacters == !arg.isEmpty )
         }
