@@ -28,6 +28,16 @@ public extension Date {
         let days = Calendar( identifier: .iso8601 ).dateComponents( [.day], from: Date(), to: date )
         return days.day ?? 0
     }
+    static var startOfDay: Date {
+        let calendar = Calendar.current
+        return calendar.startOfDay(for: Date() )
+    }
+    static var startOfWeek: Date {
+        let calendar = Calendar.current
+        var comp = calendar.dateComponents( [.yearForWeekOfYear, .weekOfYear], from: Date() )
+        comp.weekday = 2 // start with monday
+        return calendar.date( from: comp ) ?? Date()
+    }
 }
 
 public extension Int {
