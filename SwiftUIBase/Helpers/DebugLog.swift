@@ -6,6 +6,50 @@
 import Foundation
 import os
 
+// MARK: - Shadowed Print
+
+/// Outputs a log message to the console with the file, function, and line number. Time is output with minute:second:millisecond.
+/// This handles string types.
+///
+/// - Parameters:
+///   - msg: String value to be output to the console
+///   - type: Optional type for categorizing + filtering output
+///   - file: Leave blank
+///   - fnc: Leave blank
+///   - line: Leave blank
+///
+/// - Returns: None
+///
+///     print( "\(method) : \(path)", type: .network )
+///     [27:57:604] BaseService.request:65 > GET : /api/v5/MyRequest
+public func print( _ items: String..., type: DebugFilterType = .none, file: String = #file, fnc : String = #function, line: Int = #line, separator: String = " ", terminator: String = "\n" ) {
+    #if DEBUG
+    struct LogFormatter { static let formatter = DateFormatter() }
+
+    let filename = (("\(file)" as NSString).lastPathComponent as NSString).deletingPathExtension
+
+    let source = "\(filename).\(fnc)"
+    let withoutParams = source.components( separatedBy: "(" )[ 0 ]
+    LogFormatter.formatter.dateFormat = "mm:ss:SSS"
+    let timestamp = LogFormatter.formatter.string( from: Date() )
+    let fileOutput = DebugFeature.showFilePath ? file : withoutParams
+    let msg = items.map { "\($0)" }.joined(separator: separator)
+
+    let outString = "[\(timestamp)] \(fileOutput):\(line) > \(msg)"
+    
+    Swift.print( outString, terminator: terminator )
+    #endif
+}
+
+/// Outputs a log message to the console with the file, function, and line number. Time is output with minute:second:millisecond.
+/// Same as above but handles array and dictionary types.
+public func print( _ items: Any..., type: DebugFilterType = .none, file: String = #file, fnc : String = #function, line: Int = #line, separator: String = " ", terminator: String = "\n" ) {
+    #if DEBUG
+    let msg = items.map { "\($0)" }.joined(separator: separator)
+    print( msg, type: type, file: file, fnc: fnc, line: line, separator: separator, terminator: terminator )
+    #endif
+}
+
 // MARK: - Module Struct
 
 /// Struct used by DebugFlag.items to track modules
@@ -38,7 +82,7 @@ public struct DebugFeature {
 /// Specifies the filter type used by modules to determine
 /// if it should currently be logged
 public enum DebugFilterType {
-    case temp
+    case none
     case application
     case error
     case network
@@ -57,7 +101,7 @@ public enum DebugFilterType {
 public struct DebugFlag {
     public static let items: [DebugModule] = [
         /*
-        DebugModule(name: "TEMP", icon: "[TMP]", show: true, type: .temp),
+        DebugModule(name: "None", icon: "[NON]", show: true, type: .none),
         DebugModule(name: "Application", icon: "[APP]", show: true, type: .application),
         DebugModule(name: "Error", icon: "[ERR]", show: true, type: .error),
         DebugModule(name: "Network", icon: "[NET]", show: true, type: .network),
@@ -65,18 +109,7 @@ public struct DebugFlag {
         DebugModule(name: "Network Errors", icon: "[ERR]", show: true, type: .networkError),
         DebugModule(name: "Analytics", icon: "[ANA]", show: true, type: .analytics),
         
-        DebugModule(name: "Browse", icon: "[MOD]", show: true, type: .browse),
-        DebugModule(name: "Calendar", icon: "[MOD]", show: true, type: .calendar),
-        DebugModule(name: "Channels", icon: "[MOD]", show: true, type: .channels),
-        DebugModule(name: "Continue", icon: "[MOD]", show: true, type: .continueWatching),
-        DebugModule(name: "Details", icon: "[MOD]", show: true, type: .details),
         DebugModule(name: "Home", icon: "[MOD]", show: true, type: .home),
-        DebugModule(name: "Onbaording", icon: "[MOD]", show: true, type: .onboarding),
-        DebugModule(name: "Search", icon: "[MOD]", show: true, type: .search),
-        DebugModule(name: "Settings", icon: "[MOD]", show: true, type: .settings),
-        DebugModule(name: "Splash", icon: "[MOD]", show: true, type: .splash),
-        DebugModule(name: "Video", icon: "[MOD]", show: true, type: .video),
-        DebugModule(name: "Watchlist", icon: "[MOD]", show: true, type: .watchlist),
          */
     ]
 }
@@ -95,7 +128,7 @@ public struct DebugFlag {
 ///
 ///     log( "\(method) : \(path)", type: .network )
 ///     // [27:57:604] BaseService.request:65 > GET : /api/v5/MyRequest
-public func log(_ msg: String, type: DebugFilterType = .temp, file: String = #file, fnc: String = #function, line: Int = #line) {
+public func log(_ msg: String, type: DebugFilterType = .none, file: String = #file, fnc: String = #function, line: Int = #line) {
     #if DEBUG
     struct LogFormatter { static let formatter = DateFormatter() }
 
