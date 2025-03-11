@@ -9,7 +9,7 @@ public extension Date {
     enum Format: String, CustomStringConvertible {
         case isoDate = "yyyy-mm-dd"
         case isoDateTime = "yyyy-MM-dd'T'HH:mm:ss"
-        case isoDateTimeZone = "yyyy-MM-dd'T'HH:mm:ss'Z'"
+        case isoDateTimeZone = "yyyy-MM-dd'T'HH:mm:ss'Z'" // .iso8601
         
         public var description: String { return self.rawValue }
     }

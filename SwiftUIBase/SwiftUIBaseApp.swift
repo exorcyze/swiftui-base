@@ -12,6 +12,7 @@ struct SwiftUIBaseApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .task { ProjectInfo.logInfo() }
         }
     }
 }

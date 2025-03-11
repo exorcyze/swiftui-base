@@ -17,6 +17,7 @@ public struct Feature {
         public var defaultValue: Bool {
             switch self {
             case .showAuthSplash: return true
+            default: return false
             }
         }
         public var value: Bool {
@@ -38,6 +39,9 @@ public struct Feature {
             // If we have a debug override, use that first ( dev + testing )
             if let override = DebugHelper.debugString( for: self.rawValue ) { return override }
             // TODO: Update with remote value
+            //let remoteValue: Bool? = getRemoteValue( for: self.rawValue )
+            //return remoteValue ?? self.defaultValue
+            
             return self.defaultValue
         }
     }

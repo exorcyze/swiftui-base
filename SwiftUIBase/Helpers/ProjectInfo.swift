@@ -67,15 +67,15 @@ public class ProjectInfo {
     public class func logInfo() {
         let url = "none set"
         
-        log( "BUILD \(ProjectInfo.currentEnvironment), VERSION \(ProjectInfo.currentVersion)", type: .application )
-        log( "DEVICE: \(ProjectInfo.currentDevice)", type: .application )
-        log( "IP ADDRESS: \(ProjectInfo.currentIPAddress)", type: .application )
-        log( "IPV6 ADDRESS: \(ProjectInfo.currentIPv6Address)", type: .application )
-        log( "BASE URL: \(url)", type: .application )
-        log( "DEVICE NAME: \(UIDevice.current.name)", type: .application )
-        log( "DEVICE MODEL: \(UIDevice.current.model)", type: .application )
-        log( "SYSTEM VERSION: \(UIDevice.current.systemVersion)", type: .application )
-        log( "LOCALE: \(ProjectInfo.currentRegion)", type: .application )
+        print( "BUILD \(ProjectInfo.currentEnvironment), VERSION \(ProjectInfo.currentVersion)", type: .application )
+        print( "DEVICE: \(ProjectInfo.currentDevice)", type: .application )
+        print( "IP ADDRESS: \(ProjectInfo.currentIPAddress)", type: .application )
+        print( "IPV6 ADDRESS: \(ProjectInfo.currentIPv6Address)", type: .application )
+        print( "BASE URL: \(url)", type: .application )
+        print( "DEVICE NAME: \(UIDevice.current.name)", type: .application )
+        print( "DEVICE MODEL: \(UIDevice.current.model)", type: .application )
+        print( "SYSTEM VERSION: \(UIDevice.current.systemVersion)", type: .application )
+        print( "LOCALE: \(ProjectInfo.currentRegion)", type: .application )
     }
 }
 

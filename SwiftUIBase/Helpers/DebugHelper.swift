@@ -37,7 +37,7 @@ public class DebugHelper {
         // use #DEBUG conditional internally
         isDebug = true
         
-        log( "Show Auth Splash: \(Feature.isEnabled(.showAuthSplash) )" )
+        print( "Show Auth Splash: \(Feature.isEnabled(.showAuthSplash) )", type: .application )
     }
 
     /// Clear out all of our local / debug overrides
