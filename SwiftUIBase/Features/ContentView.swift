@@ -8,38 +8,38 @@
 import SwiftUI
 import Observation
 
-@Observable
-final class SampleViewModel : ObservableObject {
-    var firstName : String
-    var lastName : String
-    init( firstName: String, lastName: String ) {
-        self.firstName = firstName
-        self.lastName = lastName
+@MainActor @Observable
+final class SampleUserModel {
+    public var isLoading = false
+    public var user = GithubUser.empty
+    
+    func getData() async {
+        isLoading = true
+        Task {
+            try await Task.sleep( nanoseconds: 2_000_000_000 )
+            do {
+                user = try await SampleDataStore().getGithubUser()
+                print( "user loaded: \(user.login)" )
+            }
+            catch { print( "ERROR: " + error.localizedDescription ) }
+            
+            isLoading = false
+        }
     }
 }
 
 struct ContentView: View {
+    var viewModel = SampleUserModel()
+    
     var body: some View {
-        var viewModel = SampleViewModel( firstName: "Bilbo", lastName: "" )
-        
         VStack {
             Image(systemName: "globe")
                 .imageScale(.large)
                 .foregroundStyle(.tint)
-            Text("Hello, world!")
-
-            /*
-            Group {
-                TextInputField( "First Name", text: viewModel.firstName )
-                    .clearButtonHidden()
-                    .isRequired( false )
-                    .padding( 16 )
-                TextInputField( "Last Name", text: viewModel.lastName )
-                    .isRequired()
-                    .padding( 16 )
-            }
-             */
+            Text("Hello \(viewModel.user.login)!")
         }
+        .loadingIndicator( viewModel.isLoading )
+        .task { await viewModel.getData() }
         .padding()
     }
 }
@@ -47,3 +47,4 @@ struct ContentView: View {
 #Preview {
     ContentView()
 }
+
