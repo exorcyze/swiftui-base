@@ -11,7 +11,7 @@ import SwiftUI
 struct SwiftUIBaseApp: App {
     var body: some Scene {
         WindowGroup {
-            NavStack( MainNavigationStack.root )
+            NavStack( MainNavStack.root )
             //ContentView()
                 .task { ProjectInfo.logInfo() }
         }

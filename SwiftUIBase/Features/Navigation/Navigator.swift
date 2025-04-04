@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-/// The type that our enums of pages conform to, allowing them to be used by our Coordinator
+/// The type that our enums of pages conform to, allowing them to be used by our Navigator / NavStack
 typealias Navigable = View & Identifiable & Hashable
 
 /// Used to create a new navigation stack from NavigationStacks enums
@@ -17,18 +17,18 @@ struct NavStack<NavigationPage: Navigable>: View {
     
     let root: NavigationPage
     
-    @State private var coordinator = Navigator<NavigationPage>()
+    @State private var nav = Navigator<NavigationPage>()
     
     init( _ root: NavigationPage ) { self.root = root }
     
     var body: some View {
-        NavigationStack( path: $coordinator.path ) {
+        NavigationStack( path: $nav.path ) {
             root
                 .navigationDestination( for: NavigationPage.self ) { $0 }
-                .sheet( item: $coordinator.sheet ) { $0 }
-                .fullScreenCover( item: $coordinator.fullScreenCover ) { $0 }
+                .sheet( item: $nav.sheet ) { $0 }
+                .fullScreenCover( item: $nav.fullScreenCover ) { $0 }
         }
-        .environment( coordinator )
+        .environment( nav )
     }
 }
 

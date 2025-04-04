@@ -28,7 +28,7 @@ struct ForgotPasswordView: View {
 }
 
 struct LoginView: View {
-    var title: String
+    var title: String // sample to illustrate passing data
 
     @Environment( Navigator<LoginNavStack>.self ) private var loginNavStack
     @Environment( Navigator<MainNavStack>.self ) private var mainNavStack
