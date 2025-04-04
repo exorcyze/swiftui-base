@@ -12,6 +12,7 @@ import UIKit
 enum AppError : Error {
     case generalError
     case invalidUrl
+    case requestFailed
     case invalidResponse
     case invalidResponseStatus
     case decodingError
@@ -25,10 +26,7 @@ public enum HTTPMethod: String {
     case del = "DELETE"
 }
 
-public struct HTTPHeader {
-    public let field: String
-    public let value: String
-}
+public struct HTTPHeader { public let field, value: String }
 
 // MARK: - Network Manager
 
@@ -40,14 +38,14 @@ final public class NetworkManager {
     
     public func perform<T: Decodable>( _ request: URLRequest, outputJson: Bool = false ) async throws -> T {
         let basePath = request.url?.path ?? "Unknown"
-        print( "Network > \(basePath)", type: .network )
+        print( "\(request.httpMethod ?? "") > \(basePath)", type: .network )
         
         let ( data, response ) = try await session.data( for: request )
         
         if outputJson { prettyPrint( data, for: basePath ) }
 
         guard let response = response as? HTTPURLResponse else { throw AppError.invalidResponse }
-        guard response.statusCode == 200 else { throw AppError.invalidResponseStatus }
+        guard (200...299).contains( response.statusCode ) else { return try networkError( .invalidResponseStatus, message: "Status \(response.statusCode)" ) as! T }
         
         do { return try decode( from: data ) as T }
         catch { throw AppError.decodingError }
@@ -88,8 +86,9 @@ final public class NetworkManager {
     
     /// The idea is to have a throw loggedError( wrappedError, "Message" ) to have logging + throwing
     /// in one statement. Needs work
-    private func loggedError( _ error: Error, message: String ) throws {
-        print( "Error: " + message, type: .networkError )
+    private func networkError( _ error: AppError, message: String = "" ) throws {
+        let info = message.isEmpty ? error.localizedDescription : message
+        print( info, type: .networkError )
         throw error
     }
     
@@ -117,7 +116,7 @@ final public class NetworkManager {
 
 public extension URLRequest {
     init( _ method: HTTPMethod = .get, url endpoint: String, query: String = "", headers: [HTTPHeader]? = nil ) throws {
-        guard let url = URL( string: endpoint ) else { throw AppError.invalidUrl }
+        guard let url = URL( string: endpoint ) else { print( "invalid url", type: .networkError ); throw AppError.invalidUrl }
         
         self.init( url: url )
         self.httpMethod = method.rawValue

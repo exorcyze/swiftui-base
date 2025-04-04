@@ -27,8 +27,8 @@ struct LoadingIndicator: ViewModifier {
     func body( content: Content ) -> some View {
         ZStack {
             content
-                //.disabled( isShowing )
-                //.blur( radius: isShowing ? 3 : 0 )
+                .disabled( isShowing )
+                .blur( radius: isShowing ? 3 : 0 )
             if isShowing { loadingView }
         }
     }
@@ -61,5 +61,6 @@ struct LoadingIndicator: ViewModifier {
             .ignoresSafeArea()
             .transition( AnyTransition.opacity.animation( .easeInOut( duration: 0.2 ) ) )
     }
+    
 }
 

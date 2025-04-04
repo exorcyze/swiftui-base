@@ -44,5 +44,11 @@ public class SampleDataStore {
 
         return try await network.perform( request )
     }
+    
+    func urlBuilding() {
+        let baseUrl = URL( string: "http://api.github.com" )!
+        let url = baseUrl.appending( components: "users", "exorcyze" )
+            .appending( queryItems: [ URLQueryItem( name: "refresh", value: "true" ) ] )
+    }
 }
 

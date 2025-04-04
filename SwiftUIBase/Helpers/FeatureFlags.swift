@@ -11,6 +11,12 @@ public protocol Defaultable {
 }
 
 public struct Feature {
+    public enum KeyValues: String, CaseIterable {
+        case sampleBool
+        case sampleString
+        case sampleInt
+    }
+    
     public enum BoolValues: String, CaseIterable, Defaultable {
         case showAuthSplash = "showAuthSplash"
         
