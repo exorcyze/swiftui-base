@@ -9,7 +9,7 @@ import UIKit
 
 // MARK: - Assiciated Types
 
-enum AppError : Error {
+enum AppError : LocalizedError {
     case generalError
     case invalidUrl
     case requestFailed
@@ -17,6 +17,23 @@ enum AppError : Error {
     case invalidResponseStatus
     case decodingError
     case invalidResponseData
+    
+    /// allows us to pass in error to alert to get title
+    ///
+    ///     .alert( isPresented: $showError, error: error ) { error in } message: { error in Text( error.failureReason ) }
+    var errorDescription: String? { "Network Error" }
+    
+    var failureReason: String {
+        switch self {
+        case .generalError: "There was a problem fetching data."
+        case .invalidUrl: "The URL was not valid."
+        case .requestFailed: "The server request failed."
+        case .invalidResponse: "Bad response from server."
+        case .invalidResponseStatus: "Bad response status from server."
+        case .decodingError: "Unable to decode the server response."
+        case .invalidResponseData: "Invlaid response data from the server."
+        }
+    }
 }
 
 public enum HTTPMethod: String {

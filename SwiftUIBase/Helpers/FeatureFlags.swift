@@ -5,6 +5,7 @@
 
 import Foundation
 
+/*
 public protocol Defaultable {
     associatedtype DefaultableType
     var defaultValue: DefaultableType { get }
@@ -73,3 +74,5 @@ private extension Feature {
         print( "\(bval) : \(sval)" )
     }
 }
+*/
+

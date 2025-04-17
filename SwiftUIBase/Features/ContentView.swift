@@ -74,17 +74,32 @@ struct ContentView: View {
     @State private var textWidth: CGFloat = 80 // default placeholder
     @State private var stackWidth: CGFloat = 80 // default placeholder
     
+    @State private var toggleState = false
+    
     var body: some View {
         VStack {
+            VStack {
+                HStack {
+                    Text( "Loading:")
+                    Text( "0:05 sec")
+                }
+                ProgressView( value: 0.25 )
+            }
+            .padding( 16 )
+            .background(
+                RoundedRectangle( cornerRadius: 8 )
+                    .foregroundStyle( .black.opacity( 0.2 ) )
+            )
+            .fixedSize()
             
             Text( "Progress + Custom View:" )
             alignmentGuide
             
-            Text( "Custom Bar:" )
-            zstackLayout
+            //Text( "Custom Bar:" )
+            //zstackLayout
 
-            Text( "Progress View:" )
-            layoutProgress
+            //Text( "Progress View:" )
+            //layoutProgress
             
             iActivityIndicator(style: .arcs())
                 .frame( width: 80, height: 80 )
@@ -97,6 +112,9 @@ struct ContentView: View {
                 .frame( width: 80, height: 80 )
             
             Text("Hello \(viewModel.user.login)!")
+            
+            Toggle( "Toggle", isOn: $toggleState.animation() )
+            Button( "Toggle" ) { withAnimation { toggleState.toggle() } }
         }
         .loadingIndicator( viewModel.isLoading )
         .task { await viewModel.getData() }
@@ -125,10 +143,12 @@ struct ContentView: View {
                 .tint( Gradient( colors: [ .orange, .red ] ) )
                 .frame( width: textWidth, height: 10 )
             
+            /*
             CustomProgressBar( amount: 0.35, width: stackWidth )
             ProgressView( value: 0.25 )
                 .scaleEffect( x: progressHeight / 4, y: progressHeight / 4 )
                 .frame( width: textWidth / ( progressHeight / 4 ) )
+             */
         }
         .padding( 16 )
         .background(
@@ -158,8 +178,7 @@ struct ContentView: View {
                 .frame( height: 10 )
                 .layoutPriority( -1 )
 
-            CustomBar( amount: 0.6 )
-                .layoutPriority( -1 )
+            CustomBar( amount: 0.6 ).layoutPriority( -1 )
         }
         .background(
             RoundedRectangle( cornerRadius: 8 )
