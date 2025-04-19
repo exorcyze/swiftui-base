@@ -1,5 +1,5 @@
 //
-//  DebugView.swift
+//  SettingsView.swift
 //  SwiftUIBase
 //
 //  Created by Mike Johnson on 4/10/25.
@@ -9,7 +9,7 @@ import SwiftUI
 
 // MARK: - Core Views
 
-struct DebugView: View {
+struct SettingsView: View {
     @State var menuItems: [SettingGroupModel]
     
     var body: some View {
@@ -247,7 +247,7 @@ extension SettingGroupModel {
         
         ret.append( SettingGroupModel( title: "Features", items: [
             SettingItemModel( title: "Feature Flags", subtitle: "", type: .navigation( FeaturesView().anyView ) ),
-            SettingItemModel( title: "Debug Flags", subtitle: "", type: .navigation( DebugView( menuItems: SettingGroupModel.boolFeatureFlags() ).anyView ) ),
+            SettingItemModel( title: "Debug Flags", subtitle: "", type: .navigation( SettingsView( menuItems: SettingGroupModel.boolFeatureFlags() ).anyView ) ),
             SettingItemModel( title: "", subtitle: "Clear All Debug Data", type: .action( .clear ) ),
         ] ) )
         
@@ -270,7 +270,7 @@ extension SettingGroupModel {
 // MARK: - Preview
 
 #Preview {
-    DebugView( menuItems: SettingGroupModel.debugSettings() )
+    SettingsView( menuItems: SettingGroupModel.debugSettings() )
 }
 
 /*
