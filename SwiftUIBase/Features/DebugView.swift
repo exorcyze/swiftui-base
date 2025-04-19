@@ -5,26 +5,200 @@
 //  Created by Mike Johnson on 4/10/25.
 //
 
-/*
-struct TestLink {
-    var title: String
-    var view: AnyView
-}
-struct TestLinkView: View {
-    let linkItem = TestLink(title: "Test Link", view: AnyView( TestDestinationView() ) )
+import SwiftUI
+
+// MARK: - Core Views
+
+struct DebugView: View {
+    @State var menuItems: [SettingGroupModel]
     
     var body: some View {
         NavigationStack {
-            NavigationLink( linkItem.title, destination: linkItem.view )
+            List {
+                ForEach( menuItems ) { section( for: $0 ) }
+            }
+            .listStyle( .insetGrouped )
+            .navigationTitle( "Debug Settings" )
+        }
+    }
+    
+    func section( for group: SettingGroupModel ) -> some View {
+        Section( group.title ) {
+            ForEach( group.items ) { itemCell( $0 ) }
+        }
+    }
+
+    func itemCell( _ item: SettingItemModel ) -> some View {
+        Group {
+            switch item.type {
+            case .info: SettingInfoRow( item )
+            case .navigation: SettingNavigationRow( item )
+            case .toggle: SettingToggleRow( item )
+            case .picker: SettingPickerRow( item )
+            case .action: SettingActionRow( item, action: onButton )
+            default: SettingDisplayRow( item )
+            }
+        }
+    }
+    
+    func onButton( _ item: SettingItemModel ) {
+        print( "Button Clicked: " + item.subtitle )
+        if case .action( let actionType ) = item.type {
+            switch actionType {
+            case .none: return
+            case .clear:
+                Feature.removeOverrides()
+                SettingGroupModel.removeSettingKeyData()
+            }
         }
     }
 }
-struct TestDestinationView: View {
-    var body: some View { Text( "Destination" ) }
-}
-*/
 
-import SwiftUI
+// MARK: - Supplementary Views
+
+struct SettingInfoRow: View {
+    private let item: SettingItemModel
+    
+    init( _ item: SettingItemModel ) { self.item = item }
+    
+    var body: some View {
+        Text( item.title )
+            .font( .footnote )
+            .foregroundStyle( .secondary )
+    }
+}
+
+struct SettingDisplayRow: View {
+    private let item: SettingItemModel
+    
+    init( _ item: SettingItemModel ) { self.item = item }
+    
+    var body: some View {
+        VStack( alignment: .leading ) {
+            Text.optional( item.title, allowEmpty: false )?
+                .font( .footnote )
+                .foregroundStyle( .secondary )
+            
+            Text( item.subtitle )
+        }
+    }
+}
+
+struct SettingNavigationRow: View {
+    private let item: SettingItemModel
+    
+    init( _ item: SettingItemModel ) { self.item = item }
+    
+    var body: some View {
+        if case .navigation( let screen ) = item.type {
+            NavigationLink( item.title, destination: screen )
+        }
+    }
+}
+
+struct SettingActionRow: View {
+    private let item: SettingItemModel
+    private var action: ((SettingItemModel) -> ())?
+    
+    init( _ item: SettingItemModel, action: ((SettingItemModel) -> ())? ) {
+        self.item = item
+        self.action = action
+    }
+    
+    var body: some View {
+        Button {
+            action?( item )
+        } label: {
+            SettingDisplayRow( item )
+        }
+    }
+}
+
+struct SettingToggleRow: View {
+    private var setting: AppStorage<Bool>
+    private var settingValue: Bool { setting.wrappedValue }
+    var title: String
+    
+    init( _ boolValue: Feature.BoolValues ) {
+        self.title = boolValue.displayName
+        self.setting = AppStorage( wrappedValue: boolValue.defaultValue, boolValue.rawValue )
+    }
+    init( _ item: SettingItemModel ) {
+        if case .toggle( let feature ) = item.type {
+            self.title = feature.displayName
+            self.setting = AppStorage( wrappedValue: feature.defaultValue, feature.rawValue )
+        }
+        else {
+            self.title = "Invalid Item"
+            self.setting = AppStorage( wrappedValue: false, "" )
+        }
+    }
+    var body: some View {
+        Toggle( title, isOn: setting.projectedValue )
+            .tint( .pink )
+    }
+}
+
+struct SettingPickerRow: View {
+    var title: String
+    var values: [String] = []
+    
+    private var setting: AppStorage<String>
+    private var settingValue: String { setting.wrappedValue }
+    
+    init( _ title: String, dataSource: [String], key: String ) {
+        self.title = title
+        self.values = dataSource
+        self.setting = AppStorage( wrappedValue: "", key )
+    }
+    init( _ item: SettingItemModel ) {
+        if case .picker( let key, let items ) = item.type { self.init( item.title, dataSource: items, key: key ) }
+        else { self.init( "Invalid", dataSource: [], key: "" ) }
+    }
+    var body: some View {
+        Picker( selection: setting.projectedValue, label: Text( title ) ) {
+            ForEach( values: values ) { Text( $0 ) }
+        }
+    }
+}
+
+// MARK: - Models
+
+struct SettingGroupModel: Identifiable {
+    let id = UUID()
+    var title: String
+    var items: [SettingItemModel]
+}
+
+struct SettingItemModel: Identifiable {
+    let id = UUID()
+    var title: String
+    var subtitle: String
+    var type: DisplayType
+    
+    enum DisplayType {
+        case info
+        case display
+        case navigation( AnyView )
+        case action( ActionType )
+        case toggle( Feature.BoolValues )
+        case picker( String, [String] )
+    }
+    
+    enum ActionType {
+        case none
+        case clear
+    }
+}
+
+// MARK: - Extensions
+
+extension View {
+    /// Used to get AnyView needed for DisplayType.navigation
+    ///
+    ///     SettingItemModel( ... type: .navigation( TestView().anyView ) )
+    var anyView: AnyView { return AnyView( self ) }
+}
 
 /// Optionally returns a text field based on having a value and potentially not empty
 ///
@@ -37,139 +211,89 @@ extension Text {
     }
 }
 
-extension View {
-    @ViewBuilder
-    func hidden( _ hide: Bool, remove: Bool = true ) -> some View {
-        if hide {
-            if !remove { self.hidden() }
-        }
-        else { self.transition( .opacity ) }
-    }
-}
-
-
-// MARK: - View
-
-struct DebugView: View {
-    @State var menuItems: [SettingGroupModel]
-    
-    var body: some View {
-        NavigationStack {
-            List {
-                ForEach( menuItems ) { group in
-                    section( for: group )
-                }
-            }
-            .listStyle( .grouped )
-            .navigationTitle( "Debug Settings" )
-        }
-    }
-    
-    func section( for group: SettingGroupModel ) -> some View {
-        Section( group.title ) {
-            ForEach( group.items ) { item in
-                itemRow( for: item )
-            }
-        }
-    }
-    
-    func itemRow( for item: SettingItemModel ) -> some View {
-        VStack( alignment: .leading ) {
-            if item.type == .disclosure {
-                NavigationLink( item.title, destination: item.screen )
-            }
-            else {
-                Text.optional( item.title, allowEmpty: false )?
-                    .font( .footnote )
-                    .foregroundStyle( .secondary )
-                
-                Text( item.subtitle )
-            }
-        }
-    }
-}
-
-extension DebugView {
-    func onItemClicked( item: SettingItemModel ) {
-        if case .button = item.type { onButton( item: item ) }
-    }
-    
-    func onButton( item: SettingItemModel ) {
-        switch item.action {
-        case .none: return
-        case .clear: Feature.removeOverrides()
-        }
-    }
-}
-
-// MARK: - Menu Model
-
-struct SettingGroupModel: Identifiable {
-    let id = UUID()
-    var title: String
-    var items: [SettingItemModel]
-}
-
-struct SettingItemModel: Identifiable {
-    let id = UUID()
-    var title: String
-    var subtitle: String
-    var key: String
-    var type: DisplayType
-    var screen: AnyView
-    var action: ActionType = .none
-    
-    /// Used for DisplayType.button
-    enum ActionType {
-        case none
-        case clear
-    }
-    
-    enum DisplayType {
-        case display, disclosure, button
-    }
-}
+// MARK: - Data Sources
 
 extension SettingGroupModel {
-    static let emptyView: AnyView = AnyView( EmptyView() )
+    
+    enum AppEnvironment: String, CaseIterable, Identifiable {
+        case QA, preprod, prod
+        var id: Self { return self }
+    }
+    
+    enum SettingStorageKey: String, CaseIterable {
+        case debugEnvironment
+    }
+    
+    static func removeSettingKeyData() {
+        for key in SettingGroupModel.SettingStorageKey.allCases {
+            UserDefaults.standard.removeObject( forKey: key.rawValue )
+        }
+    }
     
     static func debugSettings() -> [SettingGroupModel] {
         var ret = [SettingGroupModel]()
         
         ret.append( SettingGroupModel( title: "Info", items: [
-            SettingItemModel( title: "Version:", subtitle: ProjectInfo.currentVersion, key: "", type: .display, screen: emptyView ),
-            SettingItemModel( title: "Device Name:", subtitle: UIDevice.current.name, key: "", type: .display, screen: emptyView ),
-            SettingItemModel( title: "Device Model:", subtitle: UIDevice.current.model, key: "", type: .display, screen: emptyView ),
-            SettingItemModel( title: "OS Version:", subtitle: UIDevice.current.systemVersion, key: "", type: .display, screen: emptyView ),
+            SettingItemModel( title: "Version:", subtitle: ProjectInfo.currentVersion, type: .display ),
+            SettingItemModel( title: "Device Name:", subtitle: UIDevice.current.name, type: .display ),
+            SettingItemModel( title: "Device Model:", subtitle: UIDevice.current.model, type: .display ),
+            SettingItemModel( title: "OS Version:", subtitle: UIDevice.current.systemVersion, type: .display ),
         ] ) )
-
-        var environmentName = "No Override"
-        //if let envOverride = DebugHelper.debugString( for: DebugHelper.environmentKey ) { environmentName = envOverride }
+        
         ret.append( SettingGroupModel( title: "Environment", items: [
-            SettingItemModel( title: environmentName, subtitle: "", key: "", type: .disclosure, screen: emptyView ),
+            SettingItemModel( title: "Environment", subtitle: "", type: .picker( SettingStorageKey.debugEnvironment.rawValue, AppEnvironment.allCases.map { $0.rawValue } ) ),
+            SettingItemModel( title: "Note: Changing environment requires an app restart to take effect.", subtitle: "", type: .info ),
         ] ) )
-
-        //ret.append( DebugMenuModel( title: "Feature Flags", items: boolFeatureFlags() ) )
-
+        
         ret.append( SettingGroupModel( title: "Features", items: [
-            SettingItemModel( title: "Feature Flags", subtitle: "", key: "", type: .disclosure, screen: AnyView( FeaturesView() ) ),
-            SettingItemModel( title: "", subtitle: "Clear All Debug Data", key: "", type: .button, screen: emptyView, action: .clear ),
+            SettingItemModel( title: "Feature Flags", subtitle: "", type: .navigation( FeaturesView().anyView ) ),
+            SettingItemModel( title: "Debug Flags", subtitle: "", type: .navigation( DebugView( menuItems: SettingGroupModel.boolFeatureFlags() ).anyView ) ),
+            SettingItemModel( title: "", subtitle: "Clear All Debug Data", type: .action( .clear ) ),
         ] ) )
-
+        
         return ret
     }
     
-    static func boolFeatureFlags() -> [SettingItemModel] {
-        var ret = [SettingItemModel]()
+    static func boolFeatureFlags() -> [SettingGroupModel] {
+        var ret = [SettingGroupModel]()
         
+        var items = [SettingItemModel]()
         Feature.BoolValues.allCases.forEach {
-            ret.append( SettingItemModel( title: $0.rawValue, subtitle: "\($0.displayName) : \($0.value)", key: $0.rawValue, type: .display, screen: emptyView ) )
+            items.append( SettingItemModel( title: "", subtitle: "", type: .toggle($0) ) )
         }
+        ret.append( SettingGroupModel( title: "Feature Flags", items: items ) )
+        
         return ret
     }
 }
 
+// MARK: - Preview
 
 #Preview {
     DebugView( menuItems: SettingGroupModel.debugSettings() )
 }
+
+/*
+// https://stackoverflow.com/questions/73922720/generic-enum-as-a-parameter-for-a-picker-swiftui-ios
+protocol PickerDataSource: CaseIterable where AllCases: RandomAccessCollection, AllCases.Element: Hashable & RawRepresentable & Identifiable, AllCases.Element.RawValue == String {}
+struct PickerRow<T: PickerDataSource>: View {
+    //private var setting: AppStorage<String>
+    //private var settingValue: String { setting.wrappedValue }
+    let title: String
+    let dataSource: T
+    @Binding private var entry: String
+    
+    init( _ title: String, dataSource: T ) {
+        self.title = title
+        self.dataSource = dataSource
+    }
+    
+    var body: some View {
+        Picker( title, selection: $entry ) {
+            ForEach( T.allCases ) { item in
+                Text( item.rawValue )
+            }
+        }
+    }
+}
+*/
