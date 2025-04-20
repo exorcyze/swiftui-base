@@ -112,7 +112,8 @@ struct ContentView: View {
                 .frame( width: 80, height: 80 )
             
             Text("Hello \(viewModel.user.login)!")
-            
+            Text( "Visit our [website](https://example.com)." ).tint( .cyan )
+                
             Toggle( "Toggle", isOn: $toggleState.animation() )
             Button( "Toggle" ) { withAnimation { toggleState.toggle() } }
         }

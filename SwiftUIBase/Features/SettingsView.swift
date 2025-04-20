@@ -48,7 +48,7 @@ struct SettingsView: View {
             case .none: return
             case .clear:
                 Feature.removeOverrides()
-                SettingGroupModel.removeSettingKeyData()
+                SettingData.removeSettingKeyData()
             }
         }
     }
@@ -213,7 +213,7 @@ extension Text {
 
 // MARK: - Data Sources
 
-extension SettingGroupModel {
+struct SettingData {
     
     enum AppEnvironment: String, CaseIterable, Identifiable {
         case QA, preprod, prod
@@ -225,7 +225,7 @@ extension SettingGroupModel {
     }
     
     static func removeSettingKeyData() {
-        for key in SettingGroupModel.SettingStorageKey.allCases {
+        for key in SettingData.SettingStorageKey.allCases {
             UserDefaults.standard.removeObject( forKey: key.rawValue )
         }
     }
@@ -247,7 +247,7 @@ extension SettingGroupModel {
         
         ret.append( SettingGroupModel( title: "Features", items: [
             SettingItemModel( title: "Feature Flags", subtitle: "", type: .navigation( FeaturesView().anyView ) ),
-            SettingItemModel( title: "Debug Flags", subtitle: "", type: .navigation( SettingsView( menuItems: SettingGroupModel.boolFeatureFlags() ).anyView ) ),
+            SettingItemModel( title: "Debug Flags", subtitle: "", type: .navigation( SettingsView( menuItems: SettingData.boolFeatureFlags() ).anyView ) ),
             SettingItemModel( title: "", subtitle: "Clear All Debug Data", type: .action( .clear ) ),
         ] ) )
         
@@ -270,7 +270,7 @@ extension SettingGroupModel {
 // MARK: - Preview
 
 #Preview {
-    SettingsView( menuItems: SettingGroupModel.debugSettings() )
+    SettingsView( menuItems: SettingData.debugSettings() )
 }
 
 /*
