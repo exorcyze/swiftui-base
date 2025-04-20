@@ -19,10 +19,13 @@ struct AvatarImageShapeKey: EnvironmentKey {
 }
 // Extend our environment values
 extension EnvironmentValues {
+    /*
     var avatarImageShape: AvatarImageShape {
         get { self[ AvatarImageShapeKey.self] }
         set { self[ AvatarImageShapeKey.self] = newValue }
     }
+     */
+    @Entry var avatarImageShape: AvatarImageShape = .round
 }
 // Setup our view modifier
 extension View {

@@ -121,6 +121,7 @@ private struct TextInputFieldValidationHandler : EnvironmentKey {
 }
 
 public extension EnvironmentValues {
+    /*
     var clearButtonHidden : Bool {
         get { self[ TextInputFieldClearButtonHidden.self ] }
         set { self[ TextInputFieldClearButtonHidden.self ] = newValue }
@@ -133,6 +134,12 @@ public extension EnvironmentValues {
         get { self[ TextInputFieldValidationHandler.self ] }
         set { self[ TextInputFieldValidationHandler.self ] = newValue }
     }
+     */
+    
+    // with @Entry macro in XCode 16 all of the above is no longer needed to define keys
+    @Entry var clearButtonHidden: Bool = false
+    @Entry var isRequired: Bool = false
+    @Entry var validationHandler: ( (String) -> Result<Bool, ValidationError> )?
 }
 
 extension View {
