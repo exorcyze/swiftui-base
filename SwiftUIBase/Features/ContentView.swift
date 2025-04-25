@@ -21,7 +21,7 @@ final class SampleUserModel {
                 user = try await SampleDataStore().getGithubUser()
                 print( "user loaded: \(user.login)" )
             }
-            catch { print( "ERROR: " + error.localizedDescription ) }
+            catch { print( "ERROR: " + error.localizedDescription, level: .warning ) }
             
             isLoading = false
         }
@@ -76,8 +76,12 @@ struct ContentView: View {
     
     @State private var toggleState = false
     
+    let eventDate = Date( timeIntervalSinceNow: 600 )
+    
     var body: some View {
         VStack {
+            Text( "\(eventDate, style: .relative) left" ).monospacedDigit()
+            
             VStack {
                 HStack {
                     Text( "Loading:")
