@@ -92,22 +92,15 @@ class FeaturesController: UIViewController {
 // MARK: - Protocols
 
 /// Protocol to allow for possibility of having different default values per key
-public protocol Defaultable {
+public protocol Featurable: CaseIterable, Hashable {
     associatedtype DefaultableType
     var defaultValue: DefaultableType { get }
     var value: DefaultableType { get }
-}
-
-public extension Defaultable {
-    var value: DefaultableType { return self.defaultValue }
-}
-
-/// Protocol for display names
-public protocol EnumDisplayable {
     var displayName: String { get }
 }
 
-public extension EnumDisplayable {
+public extension Featurable {
+    var value: DefaultableType { return self.defaultValue }
     var displayName: String { "\(self)".replacingOccurrences( of: "-", with: " " ).capitalized }
 }
 
@@ -118,11 +111,12 @@ public final class Feature {
     static internal var debugEnabled: Bool {
         #if DEBUG
         return true
-        #endif
+        #else
         return false
+        #endif
     }
 
-    public enum BoolValues: String, CaseIterable, Hashable, Defaultable, EnumDisplayable {
+    public enum BoolValues: String, Featurable {
         case pboV7 = "wpnx-espn-playback-v7"
 
         // this can be used to implement different defaults per key if desired
@@ -151,7 +145,7 @@ public final class Feature {
         }
     }
 
-    public enum StringValues: String, CaseIterable, Defaultable, EnumDisplayable {
+    public enum StringValues: String, Featurable {
         case test = "test-key"
     }
 }
@@ -200,7 +194,7 @@ private extension Feature {
         return UserDefaults.standard.object( forKey: key ) as? T
     }
     
-    static func bootstrap<T>( for key: any Defaultable ) -> T? {
+    static func bootstrap<T>( for key: any Featurable ) -> T? {
         //let features = Bootstrap.shared.trackBFeatures
         //switch key {
         //case .pboV7: return features.pbov7Enabled as? T
