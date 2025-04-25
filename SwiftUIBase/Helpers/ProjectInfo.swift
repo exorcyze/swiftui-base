@@ -76,6 +76,11 @@ public class ProjectInfo {
         print( "DEVICE MODEL: \(UIDevice.current.model)", type: .application )
         print( "SYSTEM VERSION: \(UIDevice.current.systemVersion)", type: .application )
         print( "LOCALE: \(ProjectInfo.currentRegion)", type: .application )
+        
+        print( "Info Message", type: .application, level: .info )
+        print( "Debug Message", type: .application, level: .debug )
+        print( "Warning Message", type: .application, level: .warning )
+        print( "Error Message", type: .application, level: .error )
     }
 }
 

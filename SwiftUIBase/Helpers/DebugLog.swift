@@ -22,9 +22,12 @@ import os
 ///
 ///     print( "\(method) : \(path)", type: .network )
 ///     [27:57:604] BaseService.request:65 > GET : /api/v5/MyRequest
-public func print( _ items: String..., type: DebugFilterType = .none, file: String = #file, fnc : String = #function, line: Int = #line, separator: String = " ", terminator: String = "\n" ) {
+public func print( _ items: String..., type: DebugFilterType = .none, level: DebugLogLevel = .debug, file: String = #file, fnc : String = #function, line: Int = #line, separator: String = " ", terminator: String = "\n" ) {
     #if DEBUG
-    struct LogFormatter { static let formatter = DateFormatter() }
+    struct LogFormatter {
+        static let logger = Logger( subsystem: "com.app", category: "" )
+        static let formatter = DateFormatter()
+    }
 
     let filename = (("\(file)" as NSString).lastPathComponent as NSString).deletingPathExtension
 
@@ -37,16 +40,24 @@ public func print( _ items: String..., type: DebugFilterType = .none, file: Stri
 
     let outString = "[\(timestamp)] \(fileOutput):\(line) > \(msg)"
     
-    Swift.print( outString, terminator: terminator )
+    //let icons = "🟥🟦🟧🟨🟩🟪🟫🟰"
+    //Swift.print( outString, terminator: terminator )
+    switch level {
+    case .debug: LogFormatter.logger.debug( "🟰 \(outString)" )
+    case .info: LogFormatter.logger.info( "🟩 \(outString)" )
+    case .warning: LogFormatter.logger.warning( "🟨 \(outString)" )
+    case .error: LogFormatter.logger.critical( "🟥 \(outString)" )
+    }
+
     #endif
 }
 
 /// Outputs a log message to the console with the file, function, and line number. Time is output with minute:second:millisecond.
 /// Same as above but handles array and dictionary types.
-public func print( _ items: Any..., type: DebugFilterType = .none, file: String = #file, fnc : String = #function, line: Int = #line, separator: String = " ", terminator: String = "\n" ) {
+public func print( _ items: Any..., type: DebugFilterType = .none, level: DebugLogLevel = .debug, file: String = #file, fnc : String = #function, line: Int = #line, separator: String = " ", terminator: String = "\n" ) {
     #if DEBUG
     let msg = items.map { "\($0)" }.joined(separator: separator)
-    print( msg, type: type, file: file, fnc: fnc, line: line, separator: separator, terminator: terminator )
+    print( msg, type: type, level: level, file: file, fnc: fnc, line: line, separator: separator, terminator: terminator )
     #endif
 }
 
@@ -91,6 +102,13 @@ public enum DebugFilterType {
     case analytics
     // MARK: Features
     case home
+}
+
+public enum DebugLogLevel {
+    case debug
+    case info
+    case warning
+    case error
 }
 
 // MARK: - Debug modules
@@ -169,7 +187,7 @@ public func log(_ msg: String, type: DebugFilterType = .none, file: String = #fi
 
 /// Used to log a stack trace to the console
 ///
-///     logStack()
-public func logStack( file: String = #file, fnc: String = #function, line: Int = #line ) {
-    log( "STACK DUMP:\n\t" + Thread.callStackSymbols.joined(separator: "\n\t"), type: .error, file: file, fnc: fnc, line: line )
+///     printStack()
+public func printStack( level: DebugLogLevel = .error, file: String = #file, fnc: String = #function, line: Int = #line ) {
+    print( "STACK DUMP:\n\t" + Thread.callStackSymbols.joined(separator: "\n\t"), type: .error, level: level, file: file, fnc: fnc, line: line )
 }
