@@ -7,17 +7,17 @@
 
 import SwiftUI
 
-/// The type that our enums of pages conform to, allowing them to be used by our Navigator / NavStack
-typealias Navigable = View & Identifiable & Hashable
+/// The type that our enums of pages conform to, allowing them to be used by our Routing / Route
+typealias Routable = View & Identifiable & Hashable
 
 /// Used to create a new navigation stack from NavigationStacks enums
 ///
-///     NavStack( MainNavStack.root )
-struct NavStack<NavigationPage: Navigable>: View {
+///     Route( MainRoute.root )
+struct Route<NavigationPage: Routable>: View {
     
     let root: NavigationPage
     
-    @State private var nav = Navigator<NavigationPage>()
+    @State private var nav = Routing<NavigationPage>()
     
     init( _ root: NavigationPage ) { self.root = root }
     
@@ -32,13 +32,13 @@ struct NavStack<NavigationPage: Navigable>: View {
     }
 }
 
-/// The main Navigator is used for the logic in pushing, popping, and presenting views.
+/// The main Routing is used for the logic in pushing, popping, and presenting views.
 @Observable
-class Navigator<NavigationPage: Navigable> {
+class Routing<RouteDestination: Routable> {
     
     var path: NavigationPath = NavigationPath()
-    var sheet: NavigationPage?
-    var fullScreenCover: NavigationPage?
+    var sheet: RouteDestination?
+    var fullScreenCover: RouteDestination?
     
     enum PushType {
         case link, sheet, fullScreenCover
@@ -49,7 +49,7 @@ class Navigator<NavigationPage: Navigable> {
         case fullScreenCover
     }
     
-    func push( _ page: NavigationPage, type: PushType = .link ) {
+    func push( _ page: RouteDestination, type: PushType = .link ) {
         switch type {
         case .link: path.append( page )
         case .sheet: sheet = page

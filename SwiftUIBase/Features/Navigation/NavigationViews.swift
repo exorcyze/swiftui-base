@@ -11,18 +11,18 @@ import SwiftUI
 struct NavigationDemoApp: App {
     var body: some Scene {
         WindowGroup {
-            NavStack( MainNavStack.root )
+            Route( MainRoute.root )
         }
     }
 }
 
 
 struct ForgotPasswordView: View {
-    @Environment( Navigator<MainNavStack>.self ) private var mainNavStack
+    @Environment( Routing<MainRoute>.self ) private var mainRoute
     var body: some View {
         List {
             Text( "Forgot Password" )
-            Button( "Back" ) { mainNavStack.pop( .fullScreenCover ) }
+            Button( "Back" ) { mainRoute.pop( .fullScreenCover ) }
         }
     }
 }
@@ -30,25 +30,25 @@ struct ForgotPasswordView: View {
 struct LoginView: View {
     var title: String // sample to illustrate passing data
 
-    @Environment( Navigator<LoginNavStack>.self ) private var loginNavStack
-    @Environment( Navigator<MainNavStack>.self ) private var mainNavStack
+    @Environment( Routing<LoginRoute>.self ) private var loginRoute
+    @Environment( Routing<MainRoute>.self ) private var mainRoute
 
     var body: some View {
         List {
-            Button( "Forgot Password" ) { loginNavStack.push( .forgotPassword, type: .fullScreenCover ) }
-            Button( "Back" ) { mainNavStack.pop( .sheet ) }
+            Button( "Forgot Password" ) { loginRoute.push( .forgotPassword, type: .fullScreenCover ) }
+            Button( "Back" ) { mainRoute.pop( .sheet ) }
         }
         .navigationTitle( title )
     }
 }
 
 struct MainView: View {
-    @Environment( Navigator<MainNavStack>.self ) private var mainNavStack
+    @Environment( Routing<MainRoute>.self ) private var mainRoute
     
     var body: some View {
         List {
-            Button( "Sign Up" ) { mainNavStack.push( .signUp ) }
-            Button( "Login" ) { mainNavStack.push( .login( title: "Login" ), type: .sheet ) }
+            Button( "Sign Up" ) { mainRoute.push( .signUp ) }
+            Button( "Login" ) { mainRoute.push( .login( title: "Login" ), type: .sheet ) }
         }
         .navigationTitle( "Main View" )
     }

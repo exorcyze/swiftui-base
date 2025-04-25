@@ -7,23 +7,23 @@
 
 import SwiftUI
 
-/// The NavStack groupings to be used by the application
+/// The Route groupings to be used by the application
 ///
 /// Sample Usages:
 ///
-///     WindowGroup { NavStack( MainNavStack.root ) }
+///     WindowGroup { Route( MainRoute.root ) }
 ///
-///     @Environment( Navigator<LoginNavStack>.self ) private var loginNavStack
-///     @Environment( Navigator<MainNavStack>.self ) private var mainNavStack
+///     @Environment( Routing<LoginRoute>.self ) private var loginRoute
+///     @Environment( Routing<MainRoute>.self ) private var mainRoute
 ///
-///     Button( "Sign Up" ) { mainNavStack.push( .signUp ) }
-///     Button( "Forgot Password" ) { loginNavStack.push( .forgotPassword, type: .fullScreenCover ) }
-///     Button( "Login" ) { mainNavStack.push( .login( title: "Login" ), type: .sheet ) }
+///     Button( "Sign Up" ) { mainRoute.push( .signUp ) }
+///     Button( "Forgot Password" ) { loginRoute.push( .forgotPassword, type: .fullScreenCover ) }
+///     Button( "Login" ) { mainRoute.push( .login( title: "Login" ), type: .sheet ) }
 ///
-///     Button( "Back" ) { mainNavStack.pop() }
-///     Button( "Close" ) { mainNavStack.pop( .fullScreenCover ) }
+///     Button( "Back" ) { mainRoute.pop() }
+///     Button( "Close" ) { mainRoute.pop( .fullScreenCover ) }
 
-enum MainNavStack: Navigable {
+enum MainRoute: Routable {
     var id: UUID { .init() }
     
     case root
@@ -33,13 +33,13 @@ enum MainNavStack: Navigable {
     var body: some View {
         switch self {
         case .root: MainView()
-        case .login( let title ): NavStack( LoginNavStack.root( title: title ) )
+        case .login( let title ): Route( LoginRoute.root( title: title ) )
         case .signUp: SignUpView()
         }
     }
 }
 
-enum LoginNavStack: Navigable {
+enum LoginRoute: Routable {
     var id: UUID { .init() }
     
     case root( title: String )
