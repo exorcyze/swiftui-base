@@ -36,5 +36,14 @@ extension Color {
     init( hex: UInt32, alpha: CGFloat = 1.0 ) {
         self.init(uiColor: UIColor( hex: hex, alpha: alpha ) )
     }
+    
+    static func random( opacity: Double = 0.3 ) -> Color {
+        Color(
+            red: .random(in: 0...1),
+            green: .random(in: 0...1),
+            blue: .random(in: 0...1),
+            opacity: opacity
+        )
+    }
 }
 
