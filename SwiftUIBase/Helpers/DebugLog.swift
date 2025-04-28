@@ -38,7 +38,8 @@ public func print( _ items: String..., module: DebugModule = .none, level: Debug
     let fileOutput = DebugFeature.showFilePath ? file : withoutParams
     let msg = items.map { "\($0)" }.joined(separator: separator)
 
-    let outString = "[\(timestamp)] \(fileOutput):\(line) > \(msg)"
+    let module = DebugFeature.showModuleCode ? "[\(module.rawValue)]" : ""
+    let outString = module + "[\(timestamp)] \(fileOutput):\(line) > \(msg)"
     
     //let icons = "🟥🟦🟧🟨🟩🟪🟫🟰"
     //Swift.print( outString, terminator: terminator )
@@ -86,22 +87,26 @@ public struct DebugFeature {
     static let outputFirst = false
     /// Turn on to show the filePath/fileName instead of just fileName
     static let showFilePath = false
+    /// Turn on to output the DebugModule key in the console log
+    static let showModuleCode = true
 }
 
 // MARK: - Debug filter types
 
 /// Specifies the filter type used by modules to determine
-/// if it should currently be logged
-public enum DebugModule {
-    case none
-    case application
-    case error
-    case network
-    case networkHeaders
-    case networkError
-    case analytics
+/// if it should currently be logged. The string key can be used for
+/// outputting to the console if showModuleCode is on.
+public enum DebugModule: String {
+    case none = "NON"
+    case application = "APP"
+    case error = "ERR"
+    case network = "NET"
+    case networkHeaders = "HDR"
+    case networkError = "NETERR"
+    case analytics = "ANA"
+    case routing = "RTE"
     // MARK: Features
-    case home
+    case home = "HOME"
 }
 
 public enum DebugLogLevel {
