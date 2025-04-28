@@ -35,6 +35,8 @@ struct AppControllerSampleView: View {
     var body: some View {
         // allow us to bind to it
         @Bindable var appController = appController
+        // prints out views when recalculated for debugging
+        //let _ = Self._printChanges()
         
         VStack {
             Text( appController.text )
@@ -42,5 +44,15 @@ struct AppControllerSampleView: View {
             TextField( "Text", text: $appController.text )
                 .textFieldStyle( .roundedBorder )
         }
+    }
+}
+
+// Can use ViewModifier to add access to environment variables
+fileprivate struct MyViewModel { func fetchData() { } }
+fileprivate struct SampleViewModifier: ViewModifier {
+    @Environment var viewModel: MyViewModel
+    func body(content: Content) -> some View {
+        content
+            .onTapGesture { viewModel.fetchData() }
     }
 }
