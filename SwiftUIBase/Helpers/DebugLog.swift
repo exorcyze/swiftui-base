@@ -20,9 +20,9 @@ import os
 ///
 /// - Returns: None
 ///
-///     print( "\(method) : \(path)", type: .network )
+///     print( "\(method) : \(path)", module: .network )
 ///     [27:57:604] BaseService.request:65 > GET : /api/v5/MyRequest
-public func print( _ items: String..., type: DebugFilterType = .none, level: DebugLogLevel = .debug, file: String = #file, fnc : String = #function, line: Int = #line, separator: String = " ", terminator: String = "\n" ) {
+public func print( _ items: String..., module: DebugModule = .none, level: DebugLogLevel = .debug, file: String = #file, fnc : String = #function, line: Int = #line, separator: String = " ", terminator: String = "\n" ) {
     #if DEBUG
     struct LogFormatter {
         static let logger = Logger( subsystem: "com.app", category: "" )
@@ -54,21 +54,21 @@ public func print( _ items: String..., type: DebugFilterType = .none, level: Deb
 
 /// Outputs a log message to the console with the file, function, and line number. Time is output with minute:second:millisecond.
 /// Same as above but handles array and dictionary types.
-public func print( _ items: Any..., type: DebugFilterType = .none, level: DebugLogLevel = .debug, file: String = #file, fnc : String = #function, line: Int = #line, separator: String = " ", terminator: String = "\n" ) {
+public func print( _ items: Any..., module: DebugModule = .none, level: DebugLogLevel = .debug, file: String = #file, fnc : String = #function, line: Int = #line, separator: String = " ", terminator: String = "\n" ) {
     #if DEBUG
     let msg = items.map { "\($0)" }.joined(separator: separator)
-    print( msg, type: type, level: level, file: file, fnc: fnc, line: line, separator: separator, terminator: terminator )
+    print( msg, module: module, level: level, file: file, fnc: fnc, line: line, separator: separator, terminator: terminator )
     #endif
 }
 
 // MARK: - Module Struct
 
 /// Struct used by DebugFlag.items to track modules
-public struct DebugModule {
+public struct DebugModuleModel {
     let name: String
     let icon: String
     let show: Bool
-    let type: DebugFilterType
+    let type: DebugModule
 }
 
 // MARK: - Debug feature flags
@@ -92,7 +92,7 @@ public struct DebugFeature {
 
 /// Specifies the filter type used by modules to determine
 /// if it should currently be logged
-public enum DebugFilterType {
+public enum DebugModule {
     case none
     case application
     case error
@@ -117,17 +117,17 @@ public enum DebugLogLevel {
 /// These should usually always default to false when checked
 /// in to reduce noise for other developers.
 public struct DebugFlag {
-    public static let items: [DebugModule] = [
+    public static let items: [DebugModuleModel] = [
         /*
-        DebugModule(name: "None", icon: "[NON]", show: true, type: .none),
-        DebugModule(name: "Application", icon: "[APP]", show: true, type: .application),
-        DebugModule(name: "Error", icon: "[ERR]", show: true, type: .error),
-        DebugModule(name: "Network", icon: "[NET]", show: true, type: .network),
-        DebugModule(name: "Network Headers", icon: "[NET]", show: false, type: .networkHeaders),
-        DebugModule(name: "Network Errors", icon: "[ERR]", show: true, type: .networkError),
-        DebugModule(name: "Analytics", icon: "[ANA]", show: true, type: .analytics),
+        DebugModuleModel(name: "None", icon: "[NON]", show: true, type: .none),
+        DebugModuleModel(name: "Application", icon: "[APP]", show: true, type: .application),
+        DebugModuleModel(name: "Error", icon: "[ERR]", show: true, type: .error),
+        DebugModuleModel(name: "Network", icon: "[NET]", show: true, type: .network),
+        DebugModuleModel(name: "Network Headers", icon: "[NET]", show: false, type: .networkHeaders),
+        DebugModuleModel(name: "Network Errors", icon: "[ERR]", show: true, type: .networkError),
+        DebugModuleModel(name: "Analytics", icon: "[ANA]", show: true, type: .analytics),
         
-        DebugModule(name: "Home", icon: "[MOD]", show: true, type: .home),
+        DebugModuleModel(name: "Home", icon: "[MOD]", show: true, type: .home),
          */
     ]
 }
@@ -146,7 +146,7 @@ public struct DebugFlag {
 ///
 ///     log( "\(method) : \(path)", type: .network )
 ///     // [27:57:604] BaseService.request:65 > GET : /api/v5/MyRequest
-public func log(_ msg: String, type: DebugFilterType = .none, file: String = #file, fnc: String = #function, line: Int = #line) {
+public func log(_ msg: String, type: DebugModule = .none, file: String = #file, fnc: String = #function, line: Int = #line) {
     #if DEBUG
     struct LogFormatter { static let formatter = DateFormatter() }
 
@@ -189,5 +189,5 @@ public func log(_ msg: String, type: DebugFilterType = .none, file: String = #fi
 ///
 ///     printStack()
 public func printStack( level: DebugLogLevel = .error, file: String = #file, fnc: String = #function, line: Int = #line ) {
-    print( "STACK DUMP:\n\t" + Thread.callStackSymbols.joined(separator: "\n\t"), type: .error, level: level, file: file, fnc: fnc, line: line )
+    print( "STACK DUMP:\n\t" + Thread.callStackSymbols.joined(separator: "\n\t"), module: .error, level: level, file: file, fnc: fnc, line: line )
 }
