@@ -67,20 +67,20 @@ public class ProjectInfo {
     public class func logInfo() {
         let url = "none set"
         
-        print( "BUILD \(ProjectInfo.currentEnvironment), VERSION \(ProjectInfo.currentVersion)", type: .application )
-        print( "DEVICE: \(ProjectInfo.currentDevice)", type: .application )
-        print( "IP ADDRESS: \(ProjectInfo.currentIPAddress)", type: .application )
-        print( "IPV6 ADDRESS: \(ProjectInfo.currentIPv6Address)", type: .application )
-        print( "BASE URL: \(url)", type: .application )
-        print( "DEVICE NAME: \(UIDevice.current.name)", type: .application )
-        print( "DEVICE MODEL: \(UIDevice.current.model)", type: .application )
-        print( "SYSTEM VERSION: \(UIDevice.current.systemVersion)", type: .application )
-        print( "LOCALE: \(ProjectInfo.currentRegion)", type: .application )
+        print( "BUILD \(ProjectInfo.currentEnvironment), VERSION \(ProjectInfo.currentVersion)", module: .application )
+        print( "DEVICE: \(ProjectInfo.currentDevice)", module: .application )
+        print( "IP ADDRESS: \(ProjectInfo.currentIPAddress)", module: .application )
+        print( "IPV6 ADDRESS: \(ProjectInfo.currentIPv6Address)", module: .application )
+        print( "BASE URL: \(url)", module: .application )
+        print( "DEVICE NAME: \(UIDevice.current.name)", module: .application )
+        print( "DEVICE MODEL: \(UIDevice.current.model)", module: .application )
+        print( "SYSTEM VERSION: \(UIDevice.current.systemVersion)", module: .application )
+        print( "LOCALE: \(ProjectInfo.currentRegion)", module: .application )
         
-        print( "Info Message", type: .application, level: .info )
-        print( "Debug Message", type: .application, level: .debug )
-        print( "Warning Message", type: .application, level: .warning )
-        print( "Error Message", type: .application, level: .error )
+        print( "Info Message", module: .application, level: .info )
+        print( "Debug Message", module: .application, level: .debug )
+        print( "Warning Message", module: .application, level: .warning )
+        print( "Error Message", module: .application, level: .error )
     }
 }
 

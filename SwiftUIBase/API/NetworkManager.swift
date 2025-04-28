@@ -55,7 +55,7 @@ final public class NetworkManager {
     
     public func perform<T: Decodable>( _ request: URLRequest, outputJson: Bool = false ) async throws -> T {
         let basePath = request.url?.path ?? "Unknown"
-        print( "\(request.httpMethod ?? "") > \(basePath)", type: .network )
+        print( "\(request.httpMethod ?? "") > \(basePath)", module: .network )
         
         let ( data, response ) = try await session.data( for: request )
         
@@ -96,7 +96,7 @@ final public class NetworkManager {
             return try decoder.decode( T.self, from: from )
         }
         catch {
-            print( "Decode Error \(T.self): \(error)", type: .networkError, level: .error );
+            print( "Decode Error \(T.self): \(error)", module: .networkError, level: .error );
             throw AppError.decodingError
         }
     }
@@ -105,7 +105,7 @@ final public class NetworkManager {
     /// in one statement. Needs work
     private func networkError( _ error: AppError, message: String = "" ) throws {
         let info = message.isEmpty ? error.localizedDescription : message
-        print( info, type: .networkError, level: .error )
+        print( info, module: .networkError, level: .error )
         throw error
     }
     
@@ -125,7 +125,7 @@ final public class NetworkManager {
     
     private func prettyPrint( _ data: Data, for endpoint: String = "" ) {
         let prettyPrint = NSString( data: data, encoding: String.Encoding.utf8.rawValue ) ?? ""
-        print( "\(endpoint) JSON Data: \(prettyPrint)", type: .network )
+        print( "\(endpoint) JSON Data: \(prettyPrint)", module: .network )
     }
 }
 
@@ -133,7 +133,7 @@ final public class NetworkManager {
 
 public extension URLRequest {
     init( _ method: HTTPMethod = .get, url endpoint: String, query: String = "", headers: [HTTPHeader]? = nil ) throws {
-        guard let url = URL( string: endpoint ) else { print( "invalid url", type: .networkError, level: .error ); throw AppError.invalidUrl }
+        guard let url = URL( string: endpoint ) else { print( "invalid url", module: .networkError, level: .error ); throw AppError.invalidUrl }
         
         self.init( url: url )
         self.httpMethod = method.rawValue
