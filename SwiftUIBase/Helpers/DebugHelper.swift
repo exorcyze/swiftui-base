@@ -18,27 +18,23 @@ extension String : DebugOverridable {}
 
 public class DebugHelper {
 
-    /// All debug functionality will be based off of this flag being set.
-    /// It's set by calling initializeDebugMode() during app startup.
-    ///
-    /// Project > Target > Build Settings > Active Comiplation Conditions > Debug / Release
-    /// For Debug key, enter DEBUG for the value, Release key should be blank.
-    ///
-    ///     #if DEBUG
-    ///     DebugHelper.isDebug = true
-    ///     #endif
-    public static var isDebug = false
-
-    /// This should be called upon app launch to apply overrides
-    /// for things like environment, etc. This will set isDebug to true
-    /// in case you want to check in other areas ( Eg for showing a debug panel )
-    static func initializeDebugMode() {
-        // this could be changed to have value passed in or
-        // use #DEBUG conditional internally
-        isDebug = true
-        
-        //print( "Show Auth Splash: \(Feature.isEnabled(.showAuthSplash) )", module: .application )
+    public enum Environment: String { case production, development }
+    /// Returns the envinroment we are running in
+    public static var environment: Environment {
+        #if DEBUG
+        return .development
+        #elseif targetEnvironment(simulator)
+        return .development
+        #else
+        guard let path = Bundle.main.appStoreReceiptURL?.path else { return .production }
+        return path.contains( "sandboxReceipt" ) ? .development : .production
+        #endif
     }
+    public static var isProduction: Bool { return environment == .production }
+    public static var isDebug: Bool { return environment == .development }
+
+    /// Used to determine if we are previewing in Xcode
+    public static var isRunningForPreviews: Bool { ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1" }
 
     /// Clear out all of our local / debug overrides
     static func clearAllDebugData() {
