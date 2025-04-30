@@ -193,13 +193,6 @@ struct SettingItemModel: Identifiable {
 
 // MARK: - Extensions
 
-extension View {
-    /// Used to get AnyView needed for DisplayType.navigation
-    ///
-    ///     SettingItemModel( ... type: .navigation( TestView().anyView ) )
-    var anyView: AnyView { return AnyView( self ) }
-}
-
 /// Optionally returns a text field based on having a value and potentially not empty
 ///
 ///     Text.optional( optionalText, allowEmpty = false )?.font( .headline )
