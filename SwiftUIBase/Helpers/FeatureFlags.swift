@@ -1,6 +1,5 @@
 //
-// FeatureFlags
-// Created / Copyright © : Mike Johnson, 2022
+// Created : Mike Johnson, 2022
 //
 
 import Foundation

@@ -1,6 +1,5 @@
 //
-//  UIView+Layout.swift
-//  Created / Copyright © : Mike Johnson, 2015
+//  Created : Mike Johnson, 2015
 //
 
 import Foundation

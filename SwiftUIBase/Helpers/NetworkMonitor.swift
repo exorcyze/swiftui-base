@@ -1,7 +1,4 @@
 //
-//  NetworkMonitor.swift
-//  SwiftUIBase
-//
 //  Created by Mike Johnson on 4/24/25.
 //
 

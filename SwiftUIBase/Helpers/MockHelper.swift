@@ -1,7 +1,4 @@
 //
-//  MockHelper.swift
-//  SwiftUIBase
-//
 //  Created by Mike Johnson on 4/2/25.
 //
 

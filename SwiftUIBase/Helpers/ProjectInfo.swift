@@ -1,7 +1,4 @@
 //
-//  ProjectInfo.swift
-//  SwiftUIBase
-//
 //  Created by Mike Johnson on 3/8/25.
 //
 

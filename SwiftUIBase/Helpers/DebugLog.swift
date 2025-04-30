@@ -1,6 +1,5 @@
 //
-//  DebugLog.swift
-//  Created / Copyright © : Mike Johnson, 2016
+//  Created : Mike Johnson, 2016
 //
 
 import Foundation

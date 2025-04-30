@@ -1,8 +1,5 @@
 //
-//  ViewExtensions.swift
-//  SwiftUIBase
-//
-//  Created by Mike Johnson on 4/19/25.
+//  Created by Mike Johnson on 2025.
 //
 
 import SwiftUI

@@ -1,7 +1,4 @@
 //
-//  DebugHelper.swift
-//  SwiftUIBase
-//
 //  Created by Mike Johnson on 3/10/25.
 //
 

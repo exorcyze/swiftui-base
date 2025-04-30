@@ -9,7 +9,7 @@
 
 import UIKit
 
-class TypeDrivenLogin {
+fileprivate class TypeDrivenLogin {
     let emailText = UITextField()
     let passText = UITextField()
     
@@ -29,7 +29,7 @@ class TypeDrivenLogin {
     }
 }
 
-struct Email {
+fileprivate struct Email {
     let wrappedString: String
     init?( _ rawString: String ) {
         //guard rawString.matches( "##regex##" ) else { return nil }
@@ -38,7 +38,7 @@ struct Email {
     }
 }
 
-struct Password {
+fileprivate struct Password {
     let wrappedString: String
     init?( _ rawString: String ) {
         guard rawString.count > 8 else { return nil }
@@ -46,24 +46,24 @@ struct Password {
     }
 }
 
-class AuthService {
+fileprivate class AuthService {
     //static func signIn( email: String, pass: String, completion: @escaping (Bool) -> Void ) { }
     static func signIn( email: Email, pass: Password, completion: @escaping (Result<AuthUser, Error>) -> Void ) { }
 }
 
-struct AnonUser { let userID: String }
-struct AuthUser {
+fileprivate struct AnonUser { let userID: String }
+fileprivate struct AuthUser {
     let userID: String
     let username: String
     let token: String
 }
 
-enum User {
+fileprivate enum User {
     case anonymous( AnonUser )
     case signedIn( AuthUser )
 }
 
-class MainScreen {
+fileprivate class MainScreen {
     // not used but indicates a requirement for showing the screen
     init( _: AuthUser ) { }
 }

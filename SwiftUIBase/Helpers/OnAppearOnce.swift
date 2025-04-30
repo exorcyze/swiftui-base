@@ -1,7 +1,4 @@
 //
-//  OnAppearOnce.swift
-//  SwiftUIBase
-//
 //  Created by Mike Johnson on 4/29/25.
 //
 

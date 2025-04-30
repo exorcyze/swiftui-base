@@ -1,6 +1,5 @@
 //
-// DateHelper
-// Created / Copyright © : Mike Johnson, 2021
+// Created : Mike Johnson, 2021
 //
 
 import Foundation

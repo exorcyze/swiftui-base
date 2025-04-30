@@ -1,6 +1,5 @@
 //
-// IsNotEmpty
-// Created / Copyright © : Mike Johnson, 2020
+// Created : Mike Johnson, 2020
 //
 
 import Foundation
