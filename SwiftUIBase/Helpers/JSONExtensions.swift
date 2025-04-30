@@ -13,7 +13,7 @@ public extension Dictionary where Key == String, Value == String {
             let json = try JSONSerialization.data( withJSONObject: self, options: [] )
             return String( data: json, encoding: .ascii ) ?? ""
         }
-        catch{ print("erroMsg") }
+        catch { print( "Dictionary Encoding Error: \(error.localizedDescription)", level: .error ) }
         return ""
     }
 }
@@ -24,7 +24,7 @@ public extension Data {
             guard let json = try JSONSerialization.jsonObject(with: self, options: []) as? [String : Any] else { return [String : Any]() }
             return json
         }
-        catch{ print("erroMsg") }
+        catch { print( "Data Encoding Error: \(error.localizedDescription)", level: .error ) }
         return [String : Any]()
     }
 }
