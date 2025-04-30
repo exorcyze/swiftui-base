@@ -108,14 +108,6 @@ public extension Featurable {
 
 /// Core enums + string key values for Feature Flags
 public final class Feature {
-    static internal var debugEnabled: Bool {
-        #if DEBUG
-        return true
-        #else
-        return false
-        #endif
-    }
-
     public enum BoolValues: String, Featurable {
         case pboV7 = "wpnx-espn-playback-v7"
 
@@ -174,7 +166,7 @@ public extension Feature {
     /// Sets local override values for a key, for use in QA debug panels
     static func setOverride( _ value: Bool?, for key: BoolValues ) {
         // ignore if we're not in debug mode
-        if !debugEnabled { return }
+        if DebugHelper.isProduction { return }
         // handle removing the value if nil
         if value == nil {
             UserDefaults.standard.removeObject( forKey: key.rawValue )
@@ -190,7 +182,7 @@ public extension Feature {
 
 private extension Feature {
     static func override<T>( for key: String ) -> T? {
-        if !debugEnabled { return nil }
+        if DebugHelper.isProduction { return nil }
         return UserDefaults.standard.object( forKey: key ) as? T
     }
     
@@ -203,7 +195,7 @@ private extension Feature {
     }
     static func overrideBool( for key: String ) -> Bool? {
         // ignore if we're not in debug
-        if !debugEnabled { return nil }
+        if DebugHelper.isProduction { return nil }
         guard UserDefaults.standard.object( forKey: key ) != nil else { return nil }
         return UserDefaults.standard.bool( forKey: key )
     }
