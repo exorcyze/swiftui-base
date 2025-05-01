@@ -3,6 +3,7 @@
 //
 
 import UIKit
+import os
 
 // TODO: - Possibly combine signatures for setBool and setString. Could
 // also extend to base off a typealias to support additional types more easily
