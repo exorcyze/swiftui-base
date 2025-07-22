@@ -7,6 +7,21 @@
 
 import SwiftUI
 
+/*
+// https://colinwren.medium.com/mocking-user-defaults-in-your-swift-unit-tests-54f8a8452dda
+class MockFeature: UserDefaults {
+    var persisted = [String: Data?]()
+    override func set( _ value: Any?, forKey defaultName: String ) { persisted[ defaultName ] = value as? Data }
+    override func object( forKey defaultName: String ) -> Any?  { return super.object( forKey: defaultName ) }
+}
+let feature = Feature( UserDefaults.standard )
+let mock = MockFeature()
+mock.set( true, forKey: BoolValues.pboV7.rawValue )
+let feature = Feature( mock )
+// OR
+Feature.isEnabled( .pboV7, provider: mock ) // default provider = UserDefaults.standard
+*/
+
 struct FeatureViewModel: Identifiable {
     let id = UUID()
     let key: String
@@ -166,7 +181,7 @@ public extension Feature {
     /// Sets local override values for a key, for use in QA debug panels
     static func setOverride( _ value: Bool?, for key: BoolValues ) {
         // ignore if we're not in debug mode
-        if DebugHelper.isProduction { return }
+        if AppEnvironment.isProduction { return }
         // handle removing the value if nil
         if value == nil {
             UserDefaults.standard.removeObject( forKey: key.rawValue )
@@ -182,7 +197,7 @@ public extension Feature {
 
 private extension Feature {
     static func override<T>( for key: String ) -> T? {
-        if DebugHelper.isProduction { return nil }
+        if AppEnvironment.isProduction { return nil }
         return UserDefaults.standard.object( forKey: key ) as? T
     }
     
@@ -195,7 +210,7 @@ private extension Feature {
     }
     static func overrideBool( for key: String ) -> Bool? {
         // ignore if we're not in debug
-        if DebugHelper.isProduction { return nil }
+        if AppEnvironment.isProduction { return nil }
         guard UserDefaults.standard.object( forKey: key ) != nil else { return nil }
         return UserDefaults.standard.bool( forKey: key )
     }

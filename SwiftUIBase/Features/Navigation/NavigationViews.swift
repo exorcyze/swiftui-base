@@ -1,14 +1,11 @@
 //
-//  NavigationViews.swift
-//  SwiftUIBase
-//
-//  Created by Mike Johnson on 4/3/25.
+//  Created by Mike Johnson 2025.
 //
 
 import SwiftUI
 
 //@main
-struct NavigationDemoApp: App {
+fileprivate struct NavigationDemoApp: App {
     var body: some Scene {
         WindowGroup {
             Route( MainRoute.root )
@@ -17,7 +14,7 @@ struct NavigationDemoApp: App {
 }
 
 
-struct ForgotPasswordView: View {
+fileprivate struct ForgotPasswordView: View {
     @Environment( Routing<MainRoute>.self ) private var mainRoute
     var body: some View {
         List {
@@ -27,7 +24,7 @@ struct ForgotPasswordView: View {
     }
 }
 
-struct LoginView: View {
+fileprivate struct LoginView: View {
     var title: String // sample to illustrate passing data
 
     @Environment( Routing<LoginRoute>.self ) private var loginRoute
@@ -42,7 +39,7 @@ struct LoginView: View {
     }
 }
 
-struct MainView: View {
+fileprivate struct MainView: View {
     @Environment( Routing<MainRoute>.self ) private var mainRoute
     
     var body: some View {
@@ -54,7 +51,7 @@ struct MainView: View {
     }
 }
 
-struct SignUpView: View {
+fileprivate struct SignUpView: View {
     var body: some View {
         Text( "Sign Up View" )
     }

@@ -32,6 +32,30 @@ extension View {
             )
     }
     
+    /// Makes a view inside a scrollable view a "sticky" header using visualEffect
+    /// instead of onScrollGeometryChange()
+    /// https://nilcoalescing.com/blog/StretchyHeaderInSwiftUI/
+    ///
+    ///     Image().resizable().scaledToFill().stickyHeader()
+    func stickyHeader() -> some View {
+        visualEffect { effect, geo in
+            let currentHeight = geo.size.height
+            let scrollOffset = geo.frame( in: .scrollView ).minY
+            let positiveOffset = max( 0 , scrollOffset )
+            
+            let newHeight = currentHeight + positiveOffset
+            let scaleFactor = newHeight / currentHeight
+            
+            return effect.scaleEffect( x: scaleFactor, y: scaleFactor, anchor: .bottom )
+        }
+    }
+
+    /// Assigns a transparent overlay of a random overlay to determine when
+    /// this item is re-rendered
+    func debugOverlay( opacity: Double = 0.3 ) -> some View {
+        return self.overlay( Color.random( opacity: opacity ) )
+    }
+    
     /// Performs selector on view when app will resign active
     ///
     ///     .onAppWillResignActive { player.pause() }

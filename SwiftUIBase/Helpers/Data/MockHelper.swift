@@ -53,7 +53,7 @@ struct MockCell: View {
         HStack( alignment: .top, spacing: 12 ) {
             RoundedRectangle( cornerRadius: 12 )
                 .frame( width: 80, height: 80 )
-                .foregroundStyle( .indigo.gradient.opacity( 0.5 ) )
+                .foregroundStyle( Color.random().gradient.opacity( 0.5 ) )
             VStack( alignment: .leading ) {
                 RandomText( min: 1, max: 3 )
                     .font( .headline )
@@ -65,7 +65,7 @@ struct MockCell: View {
     }
 }
 
-#Preview {
+#Preview( "Random Text" ) {
     VStack( alignment: .leading, spacing: 8 ) {
         RandomText( min: 2, max: 4 ).font( .title )
         RandomText( min: 10, max: 40, blackout: true ).font( .body )
@@ -73,6 +73,6 @@ struct MockCell: View {
     }
 }
 
-#Preview {
+#Preview( "Mock List" ) {
     MockList()
 }

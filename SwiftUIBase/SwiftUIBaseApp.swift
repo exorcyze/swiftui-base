@@ -14,9 +14,10 @@ struct SwiftUIBaseApp: App {
     
     var body: some Scene {
         WindowGroup {
-            MemoryUsageChart()
+            //MemoryUsageChart()
             //Route( MainRoute.root )
             //ContentView()
+            SettingsView(menuItems: SettingData.debugSettings() )
                 .environment( appController )
                 .task { ProjectInfo.logInfo() }
         }

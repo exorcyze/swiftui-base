@@ -1,8 +1,5 @@
 //
-//  SettingsView.swift
-//  SwiftUIBase
-//
-//  Created by Mike Johnson on 4/10/25.
+//  Created by Mike Johnson, 2025.
 //
 
 import SwiftUI
@@ -17,7 +14,7 @@ struct SettingsView: View {
             List {
                 ForEach( menuItems ) { section( for: $0 ) }
             }
-            .listStyle( .insetGrouped )
+            .listStyle( .grouped )
             .navigationTitle( "Debug Settings" )
         }
     }
@@ -156,9 +153,13 @@ struct SettingPickerRow: View {
         else { self.init( "Invalid", dataSource: [], key: "" ) }
     }
     var body: some View {
+        #if os(iOS)
         Picker( selection: setting.projectedValue, label: Text( title ) ) {
             ForEach( values: values ) { Text( $0 ) }
         }
+        #elseif os(tvOS)
+        Text( "Not implemented for tvOS yet")
+        #endif
     }
 }
 
@@ -239,7 +240,6 @@ struct SettingData {
         ] ) )
         
         ret.append( SettingGroupModel( title: "Features", items: [
-            SettingItemModel( title: "Feature Flags", subtitle: "", type: .navigation( FeaturesView().anyView ) ),
             SettingItemModel( title: "Debug Flags", subtitle: "", type: .navigation( SettingsView( menuItems: SettingData.boolFeatureFlags() ).anyView ) ),
             SettingItemModel( title: "", subtitle: "Clear All Debug Data", type: .action( .clear ) ),
         ] ) )
@@ -255,15 +255,22 @@ struct SettingData {
             items.append( SettingItemModel( title: "", subtitle: "", type: .toggle($0) ) )
         }
         ret.append( SettingGroupModel( title: "Feature Flags", items: items ) )
-        
+
+        ret.append( SettingGroupModel( title: "", items: [
+            SettingItemModel( title: "", subtitle: "Clear All Debug Data", type: .action( .clear ) ),
+        ] ) )
+
         return ret
     }
 }
 
 // MARK: - Preview
 
-#Preview {
+#Preview( "Debug Screen" ) {
     SettingsView( menuItems: SettingData.debugSettings() )
+}
+#Preview( "Features" ) {
+    SettingsView( menuItems: SettingData.boolFeatureFlags() )
 }
 
 /*

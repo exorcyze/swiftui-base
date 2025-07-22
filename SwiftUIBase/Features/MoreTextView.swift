@@ -7,6 +7,38 @@
 
 import SwiftUI
 
+struct DemoView: View {
+    let items: [String]
+    
+    var body: some View {
+        VStack(alignment: .leading) {
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack {
+                    ForEach(items, id: \.self) { item in
+                        Text(item)
+                            .lineLimit(1)
+                            .fixedSize()
+                            .overlay(
+                                GeometryReader { geometry in
+                                    Color.white
+                                        .opacity(
+                                            geometry.frame(in: .global).maxX < UIScreen.main.bounds.width ? 0.0 : 1.0
+                                        )
+                                }
+                            )
+                    }
+                }
+            }
+        }
+    }
+    
+}
+struct DemoView_Previews: PreviewProvider {
+    static var previews: some View {
+        DemoView(items: ["2000", "• Drama", "• Animation", "• Musicals", "• Horror", "• Action" ] )
+    }
+}
+    
 struct MoreTextView: View {
     let short = "Lorem Ipsum is simply dummy"
     let mid = "Lorem Ipsum is simply dummy text of the printing and typesetting industry."

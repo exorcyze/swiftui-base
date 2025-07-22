@@ -1,8 +1,5 @@
 //
-//  Routes.swift
-//  SwiftUIBase
-//
-//  Created by Mike Johnson on 4/26/25.
+//  Created by Mike Johnson 2025.
 //
 
 import SwiftUI
@@ -23,6 +20,8 @@ import SwiftUI
 ///     Button( "Back" ) { mainRoute.pop() }
 ///     Button( "Close" ) { mainRoute.pop( .fullScreenCover ) }
 
+// MARK: - Main Route
+
 enum MainRoute: Routable {
     var id: UUID { .init() }
     
@@ -39,6 +38,8 @@ enum MainRoute: Routable {
     }
 }
 
+// MARK: - Login Route
+
 enum LoginRoute: Routable {
     var id: UUID { .init() }
     
@@ -52,3 +53,14 @@ enum LoginRoute: Routable {
         }
     }
 }
+
+// MARK: - Sample Stubs
+
+// Here for illustration above only
+fileprivate struct MainView: View { var body: some View { Text( "Main" ) } }
+fileprivate struct LoginView: View {
+    var title: String
+    var body: some View { Text( "Login" ) }
+}
+fileprivate struct ForgotPasswordView: View { var body: some View { Text( "Forgot" ) } }
+fileprivate struct SignUpView: View { var body: some View { Text( "Sign Up" ) } }

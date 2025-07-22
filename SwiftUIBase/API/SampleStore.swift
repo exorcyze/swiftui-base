@@ -1,15 +1,15 @@
 //
-//  Created by Mike Johnson on 2025.
+//  Created by Mike Johnson, 2025.
 //
 
 import SwiftUI
 
 // MARK: - Sample Objects
-public struct PostData : Codable {
+fileprivate struct PostData : Codable {
     let name : String
     let age : Int
 }
-public struct GithubUser : Codable {
+struct GithubUser : Codable {
     let login : String
     let avatarUrl : String
     
@@ -18,7 +18,7 @@ public struct GithubUser : Codable {
 
 // MARK: - Sample Calls
 
-public class SampleDataStore {
+class SampleDataStore {
     private let network = NetworkManager.shared
     
     func getGithubUser() async throws -> GithubUser {

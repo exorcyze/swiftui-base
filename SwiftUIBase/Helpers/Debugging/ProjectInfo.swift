@@ -71,6 +71,7 @@ public class ProjectInfo {
         print( "BASE URL: \(url)", module: .application )
         print( "DEVICE NAME: \(UIDevice.current.name)", module: .application )
         print( "DEVICE MODEL: \(UIDevice.current.model)", module: .application )
+        print( "MODEL IDENTIFIER: \(UIDevice.modelIdentifier)", module: .application )
         print( "SYSTEM VERSION: \(UIDevice.current.systemVersion)", module: .application )
         print( "LOCALE: \(ProjectInfo.currentRegion)", module: .application )
         
