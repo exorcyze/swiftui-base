@@ -59,6 +59,13 @@ struct SettingInfoRow: View {
     init( _ item: SettingItemModel ) { self.item = item }
     
     var body: some View {
+        #if os(iOS)
+        textView
+        #elseif os(tvOS)
+        Button {} label: { textView }
+        #endif
+    }
+    var textView: some View {
         Text( item.title )
             .font( .footnote )
             .foregroundStyle( .secondary )
@@ -71,6 +78,15 @@ struct SettingDisplayRow: View {
     init( _ item: SettingItemModel ) { self.item = item }
     
     var body: some View {
+        #if os(iOS)
+        infoView
+        #elseif os(tvOS)
+        // use a button with no action to ensure that all items are visible on tvOS
+        Button {} label: { infoView }
+            .buttonStyle( .borderless )
+        #endif
+    }
+    var infoView: some View {
         VStack( alignment: .leading ) {
             Text.optional( item.title, allowEmpty: false )?
                 .font( .footnote )
@@ -189,19 +205,6 @@ struct SettingItemModel: Identifiable {
     enum ActionType {
         case none
         case clear
-    }
-}
-
-// MARK: - Extensions
-
-/// Optionally returns a text field based on having a value and potentially not empty
-///
-///     Text.optional( optionalText, allowEmpty = false )?.font( .headline )
-extension Text {
-    static func optional(_ text: String?, allowEmpty: Bool = false) -> Text? {
-        guard let text else { return nil }
-        if !allowEmpty && text.isEmpty { return nil }
-        return Text(text)
     }
 }
 
