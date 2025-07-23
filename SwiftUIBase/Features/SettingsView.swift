@@ -31,9 +31,10 @@ struct SettingsView: View {
             case .info: SettingInfoRow( item )
             case .navigation: SettingNavigationRow( item )
             case .toggle: SettingToggleRow( item )
+            case .feature: SettingFeatureRow( item )
             case .picker: SettingPickerRow( item )
             case .action: SettingActionRow( item, action: onButton )
-            default: SettingDisplayRow( item )
+            case .display: SettingDisplayRow( item )
             }
         }
     }
@@ -46,6 +47,9 @@ struct SettingsView: View {
             case .clear:
                 Feature.removeOverrides()
                 SettingData.removeSettingKeyData()
+            case .custom( let action ):
+                action()
+                return
             }
         }
     }
@@ -152,6 +156,43 @@ struct SettingToggleRow: View {
     }
 }
 
+struct SettingFeatureRow: View {
+    private var setting: AppStorage<Bool>
+    private var settingValue: Bool { setting.wrappedValue }
+    private var defaultValue: Bool = false
+    var title: String
+    var overrideText: String { defaultValue == setting.projectedValue.wrappedValue ? "[Default]" : "[Overridden]" }
+    
+    init( _ boolValue: Feature.BoolValues ) {
+        self.title = boolValue.displayName
+        self.setting = AppStorage( wrappedValue: boolValue.defaultValue, boolValue.rawValue )
+        defaultValue = boolValue.defaultValue
+    }
+    init( _ item: SettingItemModel ) {
+        if case .toggle( let feature ) = item.type {
+            self.title = feature.displayName
+            self.setting = AppStorage( wrappedValue: feature.defaultValue, feature.rawValue )
+            defaultValue = feature.defaultValue
+        }
+        else {
+            self.title = "Invalid Item"
+            self.setting = AppStorage( wrappedValue: false, "" )
+            defaultValue = false
+        }
+    }
+    var body: some View {
+        VStack( alignment: .leading ) {
+            Toggle( title, isOn: setting.projectedValue )
+                .tint( .pink )
+            
+            Text( overrideText )
+                .font( .footnote )
+                .foregroundStyle( .secondary )
+                .transition( .push( from: .bottom ) )
+        }
+    }
+}
+
 struct SettingPickerRow: View {
     var title: String
     var values: [String] = []
@@ -199,12 +240,14 @@ struct SettingItemModel: Identifiable {
         case navigation( AnyView )
         case action( ActionType )
         case toggle( Feature.BoolValues )
+        case feature( Feature.BoolValues )
         case picker( String, [String] )
     }
     
     enum ActionType {
         case none
         case clear
+        case custom( () -> Void )
     }
 }
 
@@ -245,6 +288,7 @@ struct SettingData {
         ret.append( SettingGroupModel( title: "Features", items: [
             SettingItemModel( title: "Debug Flags", subtitle: "", type: .navigation( SettingsView( menuItems: SettingData.boolFeatureFlags() ).anyView ) ),
             SettingItemModel( title: "", subtitle: "Clear All Debug Data", type: .action( .clear ) ),
+            SettingItemModel( title: "", subtitle: "Closure Sample", type: .action( .custom( { print( "SAMPLE" ) } ) ) ),
         ] ) )
         
         return ret
