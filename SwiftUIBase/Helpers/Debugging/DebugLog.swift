@@ -89,7 +89,7 @@ public func print( _ items: String..., module: DebugModule = .none, level: Debug
     let msg = items.map { "\($0)" }.joined(separator: separator)
 
     let module = DebugFeature.showModuleCode ? "[\(module.rawValue)]" : ""
-    let outString = module + "[\(timestamp)] \(fileOutput):\(line) > \(msg)"
+    let outString = module + "[\(timestamp)] \(fileOutput):\(line) >> \(msg)"
     
     //Swift.print( outString, terminator: terminator )
     switch level {
