@@ -19,7 +19,14 @@ struct SwiftUIBaseApp: App {
             //ContentView()
             SettingsView(menuItems: SettingData.debugSettings() )
                 .environment( appController )
-                .task { ProjectInfo.logInfo() }
+                .task {
+                    ProjectInfo.logInfo()
+                    do {
+                        let user = try await SampleDataStore().getGithubUser()
+                        print( "User: \(user.login)")
+                        SampleDataStore().sampleDecode()
+                    } catch { }
+                }
         }
     }
 }
