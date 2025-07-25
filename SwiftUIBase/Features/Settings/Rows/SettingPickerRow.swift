@@ -1,8 +1,5 @@
 //
-//  SettingPickerRow.swift
-//  SwiftUIBase
-//
-//  Created by Mike Johnson on 7/24/25.
+//  Created by Mike Johnson, 2025
 //
 
 
@@ -30,7 +27,15 @@ struct SettingPickerRow: View {
             ForEach( values: values ) { Text( $0 ) }
         }
         #elseif os(tvOS)
-        Text( "Not implemented for tvOS yet")
+        HStack {
+            Text( title )
+                .frame( minWidth: 300, alignment: .leading )
+            
+            Picker( selection: setting.projectedValue, label: Text( title ) ) {
+                ForEach( values: values ) { Text( $0 ) }
+            }
+            .pickerStyle(.segmented)
+        }
         #endif
     }
 }

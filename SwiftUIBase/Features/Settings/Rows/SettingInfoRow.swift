@@ -1,5 +1,5 @@
 //
-//  Created by Mike Johnson, 2025.
+//  Created by Mike Johnson, 2025
 //
 
 import SwiftUI

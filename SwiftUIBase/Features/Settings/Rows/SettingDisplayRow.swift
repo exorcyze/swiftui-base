@@ -1,8 +1,5 @@
 //
-//  SettingDisplayRow.swift
-//  SwiftUIBase
-//
-//  Created by Mike Johnson on 7/24/25.
+//  Created by Mike Johnson, 2025
 //
 
 
