@@ -116,8 +116,9 @@ public func print( _ items: Any..., module: DebugModule = .none, level: DebugLog
 /// Used to log a stack trace to the console
 ///
 ///     printStack()
-public func printStack( level: DebugLogLevel = .error, file: String = #file, fnc: String = #function, line: Int = #line ) {
-    print( "STACK DUMP:\n\t" + Thread.callStackSymbols.joined(separator: "\n\t"), module: .error, level: level, file: file, fnc: fnc, line: line )
+public func printStack( level: DebugLogLevel = .warning, file: String = #file, fnc: String = #function, line: Int = #line ) {
+    // Use Thread.callStackSymbols instead of Thread.callStack for standard, non-demangled stack output
+    print( "STACK DUMP:\n\t" + Thread.callStack.joined(separator: "\n\t"), module: .error, level: level, file: file, fnc: fnc, line: line )
 }
 
 // MARK: - Levels
@@ -138,3 +139,4 @@ public enum DebugLogLevel {
         }
     }
 }
+
