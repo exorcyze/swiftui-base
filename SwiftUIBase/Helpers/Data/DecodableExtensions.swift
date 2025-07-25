@@ -10,10 +10,7 @@ public extension Decodable {
     ///     let model = try MyModel.decode( from: jsonData )
     static func decode( from: Data ) throws -> Self {
         do {
-            let decoder = JSONDecoder()
-            decoder.dateDecodingStrategy = .iso8601
-            decoder.keyDecodingStrategy = .convertFromSnakeCase
-            return try decoder.decode( Self.self, from: from )
+            return try JSONDecoder.shared.decode( Self.self, from: from )
         }
         catch {
             print( "Decode Error \(Self.self): \(error)", level: .error );
