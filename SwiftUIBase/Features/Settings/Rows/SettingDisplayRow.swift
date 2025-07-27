@@ -14,9 +14,9 @@ struct SettingDisplayRow: View {
         #if os(iOS)
         infoView
         #elseif os(tvOS)
-        // use a button with no action to ensure that all items are visible on tvOS
+        // use a button with no action to ensure that all items are visible on tvOS,
+        // like for cases where you may have a lot of info rows for qa / debugging
         Button {} label: { infoView }
-            .buttonStyle( .borderless )
         #endif
     }
     var infoView: some View {

@@ -18,7 +18,10 @@ struct SettingActionRow: View {
         Button {
             action?( item )
         } label: {
+            // ensure that the sub-button inside the display row is borderless when
+            // using it wrapped within an action to not get a double button
             SettingDisplayRow( item )
+                .buttonStyle( .borderless )
         }
     }
 }
