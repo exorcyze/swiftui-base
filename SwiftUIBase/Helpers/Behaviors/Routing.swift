@@ -133,6 +133,14 @@ fileprivate struct SampleLoginView: View {
     var title: String
     var body: some View { Text( "Login" ) }
 }
-fileprivate struct SampleForgotPasswordView: View { var body: some View { Text( "Forgot" ) } }
+fileprivate struct SampleForgotPasswordView: View {
+    @Environment( Routing<SampleMainRoute>.self ) private var mainRoute
+    var body: some View {
+        List {
+            Text( "Forgot Password" )
+            Button( "Back" ) { mainRoute.pop( .fullScreenCover ) }
+        }
+    }
+}
 fileprivate struct SampleSignUpView: View { var body: some View { Text( "Sign Up" ) } }
 
