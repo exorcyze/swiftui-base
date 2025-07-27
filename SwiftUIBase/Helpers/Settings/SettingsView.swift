@@ -60,28 +60,3 @@ struct SettingsView: View {
 #Preview( "Features" ) {
     SettingsView( menuItems: SettingData.boolFeatureFlags() )
 }
-
-/*
-// https://stackoverflow.com/questions/73922720/generic-enum-as-a-parameter-for-a-picker-swiftui-ios
-protocol PickerDataSource: CaseIterable where AllCases: RandomAccessCollection, AllCases.Element: Hashable & RawRepresentable & Identifiable, AllCases.Element.RawValue == String {}
-struct PickerRow<T: PickerDataSource>: View {
-    //private var setting: AppStorage<String>
-    //private var settingValue: String { setting.wrappedValue }
-    let title: String
-    let dataSource: T
-    @Binding private var entry: String
-    
-    init( _ title: String, dataSource: T ) {
-        self.title = title
-        self.dataSource = dataSource
-    }
-    
-    var body: some View {
-        Picker( title, selection: $entry ) {
-            ForEach( T.allCases ) { item in
-                Text( item.rawValue )
-            }
-        }
-    }
-}
-*/
