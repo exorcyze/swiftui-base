@@ -4,7 +4,7 @@
 
 import SwiftUI
 
-/// Implements an above- or below-the-fold snapping behavior.
+/// Implements an above- or below-the-fold snapping behavior for tvOS.
 ///
 /// This behavior uses the expected height of the header to determine the
 /// snapping behavior, depending on whether the view is currently above the fold
@@ -77,4 +77,109 @@ struct FoldSnapping: ScrollTargetBehavior {
             target.rect.origin.y = 0
         }
     }
+}
+
+// MARK: - Sample Views
+
+fileprivate struct FoldSnappingSample: View {
+    @State private var isBelowFold = false
+    private var heroHeight: CGFloat = 800
+    
+    var body: some View {
+        ScrollView( .vertical ) {
+            
+            VStack( alignment: .leading, spacing: 24 ) {
+                heroView
+                
+                rowView
+                rowView
+                rowView
+            }
+            // Use the stack's content views to determine scroll targeting.
+            .scrollTargetLayout()
+            
+        }
+        .background( alignment: .top ) { FoldSnappingHeroBackgroundSample( isBelowFold: isBelowFold ) }
+        .scrollTargetBehavior(
+            FoldSnapping( isAboveFold: !isBelowFold, foldHeight: heroHeight )
+        )
+        .scrollClipDisabled() // prevent scroll view from clipping raised focus effects
+        .frame( maxHeight: .infinity, alignment: .top )
+        .ignoresSafeArea( .all )
+    }
+    
+    /// The content inside the hero view, excludes the content for this sample so it
+    /// can have dynamic masking, keeping it as the page background
+    var heroView: some View {
+        VStack( alignment: .leading ) {
+
+            Spacer()
+
+            Text( "Sample Header" )
+                .font( .largeTitle ).bold()
+            
+            Button { } label: {
+                Text( "Play Sample" )
+            }
+        }
+        .frame( maxWidth: .infinity, alignment: .leading )
+        #if os(tvOS)
+        .focusSection()
+        #endif
+        // Use 80% of the container's vertical space.
+        .containerRelativeFrame(.vertical, alignment: .topLeading) { length, _ in length * 0.8 }
+        // toggle the fold state if we're more than 50% off-screen
+        .onScrollVisibilityChange { visible in
+            withAnimation { isBelowFold = !visible }
+        }
+    }
+
+    var rowView: some View {
+        Button { } label: {
+            Text( "Sample Button")
+        }
+        .frame( height: 240 )
+        .background( Color.random() )
+    }
+}
+
+/// Sample hero that uses dynamic material masking
+fileprivate struct FoldSnappingHeroBackgroundSample: View {
+    var isBelowFold: Bool
+    
+    var body: some View {
+        Image( "Sample Image" )
+            .resizable()
+            .aspectRatio( contentMode: .fill )
+            .overlay {
+                // The view builds the material gradient by filling an area with
+                // a material, and then masking that area using a linear gradient.
+                Rectangle()
+                    .fill( .regularMaterial )
+                    .mask { maskView }
+            }
+            .background( Color.random() )
+            .ignoresSafeArea()
+    }
+
+    var maskView: some View {
+        // The gradient makes direct use of the `belowFold` property to
+        // determine the opacity of its stops.  This way, when `belowFold`
+        // changes, the gradient can animate the change to its opacity smoothly.
+        // If you swap out the gradient with an opaque color, SwiftUI builds a
+        // cross-fade between the solid color and the gradient, resulting in a
+        // strange fade-out-and-back-in appearance.
+        LinearGradient(
+            stops: [
+                .init( color: .black, location: 0.25 ),
+                .init( color: .black.opacity( isBelowFold ? 1 : 0.3 ), location: 0.375 ),
+                .init( color: .black.opacity( isBelowFold ? 1 : 0 ), location: 0.5 )
+            ],
+            startPoint: .bottom, endPoint: .top
+        )
+    }
+}
+
+#Preview {
+    FoldSnappingSample()
 }
