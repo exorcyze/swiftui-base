@@ -10,7 +10,7 @@ import os
 /// These flags are used to conifigure or
 /// enable / disable certain features of logging.
 public struct DebugFeature {
-    /// Turn on to force all output to show ( not yet implemented )
+    /// Turn on to force all output to show, ignoring DebugModule.showInOutput
     static let showAllOutput = false
     /// Turn on to show the filePath/fileName instead of just fileName
     static let showFilePath = false
@@ -77,7 +77,7 @@ public func print( _ items: String..., module: DebugModule = .none, level: Debug
     }
 
     // bail out if we don't want output from this module
-    guard module.showInOutput else { return }
+    guard module.showInOutput && !DebugFeature.showAllOutput else { return }
     
     let filename = (("\(file)" as NSString).lastPathComponent as NSString).deletingPathExtension
 
