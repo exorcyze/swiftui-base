@@ -4,7 +4,7 @@
 
 import SwiftUI
 
-/// Provides simpler navigation that is more akin to how things can be done in UIKit.
+/// Provides simple navigation that is more akin to how things can be done in UIKit.
 /// See sample code at the bottom of the file for example implementations.
 ///
 /// Sample Usages:

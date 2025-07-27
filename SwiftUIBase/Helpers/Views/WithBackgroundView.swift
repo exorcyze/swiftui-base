@@ -32,6 +32,9 @@ struct WithBackgroundView: ViewModifier {
 }
 
 extension View {
+    /// Allows one of multiple types of background views to be set
+    ///
+    ///     Text( "Test" ).withBackgroundView( .linearGradient( mygradient ) )
     func withBackgroundView( _ background: WithBackgroundView.BackgroundType, opacity: Double = 1.0 ) -> some View {
         modifier( WithBackgroundView( background: background, opacity: opacity ) )
     }

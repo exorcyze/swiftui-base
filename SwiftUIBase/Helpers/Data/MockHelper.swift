@@ -4,10 +4,10 @@
 
 import SwiftUI
 
-/// Returns a random number of liorem ipsum words in a range.
-///
-///         Text( .randomWords( min: 2, max 4 ) )
 extension String {
+    /// Returns a random number of liorem ipsum words in a range.
+    ///
+    ///         Text( .randomWords( min: 2, max 4 ) )
     static func randomWords( min: Int, max: Int ) -> String {
         return Mock.randomWords( min: min, max: max )
     }

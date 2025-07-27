@@ -1,6 +1,8 @@
 //
 // Created by Mike Johnson, 2025
 //
+// Used by shadowed `print` function for output of a
+// demangled call-stack
 
 import Foundation
 import Darwin
