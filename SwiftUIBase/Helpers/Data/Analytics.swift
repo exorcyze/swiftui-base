@@ -1,5 +1,5 @@
 //
-//  Created: Mike Johnson, 2020.
+// Created by Mike Johnson, 2020.
 //
 // Usage:
 //
@@ -172,7 +172,6 @@ public extension ContentEvent {
 // MARK: - Fake Stubs
 
 /// These are stand-in examples for an actual provider SDK interface
-
 public class ProviderEvent {
     enum EventType: String { case other }
     
