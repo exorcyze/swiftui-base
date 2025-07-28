@@ -43,7 +43,7 @@ struct SettingData {
         ] ) )
         
         ret.append( SettingGroupModel( title: "Features", items: [
-            SettingItemModel( title: "Debug Flags", subtitle: "", type: .navigation( SettingsView( menuItems: SettingData.boolFeatureFlags() ).anyView ) ),
+            SettingItemModel( title: "Debug Flags", subtitle: "", type: .navigation( SettingsView( menuItems: SettingData.boolFeatureFlags(), title: "Feature Flags" ).anyView ) ),
             SettingItemModel( title: "", subtitle: "Clear All Debug Data", type: .action( .custom( clearAllData ) ) ),
             SettingItemModel( title: "", subtitle: "Closure Sample", type: .action( .custom( testOutput ) ) ),
         ] ) )
@@ -70,4 +70,13 @@ struct SettingData {
     static func testOutput() {
         print( "Test Output" )
     }
+}
+
+// MARK: - Preview
+
+#Preview( "Debug Screen" ) {
+    SettingsView( menuItems: SettingData.debugSettings(), title: "Debug Settings" )
+}
+#Preview( "Features" ) {
+    SettingsView( menuItems: SettingData.boolFeatureFlags(), title: "Feature Flags" )
 }

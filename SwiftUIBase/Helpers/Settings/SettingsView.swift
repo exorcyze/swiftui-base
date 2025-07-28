@@ -8,6 +8,7 @@ import SwiftUI
 
 struct SettingsView: View {
     @State var menuItems: [SettingGroupModel]
+    let title: String
     
     var body: some View {
         NavigationStack {
@@ -15,7 +16,7 @@ struct SettingsView: View {
                 ForEach( menuItems ) { section( for: $0 ) }
             }
             .listStyle( .grouped )
-            .navigationTitle( "Debug Settings" )
+            .navigationTitle( title )
         }
     }
     
@@ -55,8 +56,8 @@ struct SettingsView: View {
 // MARK: - Preview
 
 #Preview( "Debug Screen" ) {
-    SettingsView( menuItems: SettingData.debugSettings() )
+    SettingsView( menuItems: SettingData.debugSettings(), title: "Debug Settings" )
 }
 #Preview( "Features" ) {
-    SettingsView( menuItems: SettingData.boolFeatureFlags() )
+    SettingsView( menuItems: SettingData.boolFeatureFlags(), title: "Feature Flags" )
 }

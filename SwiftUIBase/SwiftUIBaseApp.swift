@@ -17,7 +17,7 @@ struct SwiftUIBaseApp: App {
             //MemoryUsageChart()
             //Route( MainRoute.root )
             //ContentView()
-            SettingsView(menuItems: SettingData.debugSettings() )
+            SettingsView(menuItems: SettingData.debugSettings(), title: "Debug Settings" )
                 .environment( appController )
                 .task {
                     ProjectInfo.logInfo()
