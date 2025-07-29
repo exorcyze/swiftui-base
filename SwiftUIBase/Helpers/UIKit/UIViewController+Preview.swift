@@ -12,12 +12,7 @@ import SwiftUI
 /*
 #if canImport(SwiftUI) && DEBUG
 import SwiftUI
-@available(iOS 13, *)
-struct MyViewControllerPreview: PreviewProvider {
-    static var previews: some View {
-        MyViewController(data: mydata).asPreview()
-    }
-}
+#Preview { MyController().asSwiftUIView() }
 #endif
 */
 
@@ -25,61 +20,53 @@ struct MyViewControllerPreview: PreviewProvider {
 /*
 #if canImport(SwiftUI) && DEBUG
 import SwiftUI
-@available(iOS 13, *)
-struct TestView_Preview: PreviewProvider {
-    static var previews: some View {
-        TestView().asPreview()
-    }
-}
+#Preview { MyView().asPreview() }
 #endif
 */
 
 // MARK: - UIViewController extensions
 
 extension UIViewController {
-    @available(iOS 13, *)
-    private struct Preview: UIViewControllerRepresentable {
+    private struct SwiftUIController: UIViewControllerRepresentable {
         var viewController: UIViewController
-
-        func makeUIViewController(context: Context) -> UIViewController {
-            viewController
-        }
-
-        func updateUIViewController(_ uiViewController: UIViewController, context: Context) {
-            // No-op
-        }
+        func makeUIViewController(context: Context) -> UIViewController { viewController }
+        func updateUIViewController(_ uiViewController: UIViewController, context: Context) { }
     }
-
-    @available(iOS 13, *)
-    func asPreview() -> some View {
-        Preview(viewController: self)
+    /// Used to generically wrap a UIViewController in a SwiftUI View. Can also be used in previews
+    ///
+    ///     let view = MyController().asSwiftUIView()
+    func asSwiftUIView() -> some View {
+        SwiftUIController(viewController: self)
     }
 }
 
 // MARK: - UIView Extensions
 
 extension UIView {
-    @available(iOS 13, *)
-    private struct Preview: UIViewRepresentable {
+    private struct SwiftUIView: UIViewRepresentable {
         var view: UIView
-
-        func makeUIView(context: Context) -> UIView {
-            view
-        }
-
-        func updateUIView(_ view: UIView, context: Context) {
-            // No-op
-        }
+        func makeUIView(context: Context) -> UIView { view }
+        func updateUIView(_ view: UIView, context: Context) { }
     }
 
-    @available(iOS 13, *)
+    /// Used to generically wrap a UIViewController in a SwiftUI View
+    ///
+    ///     let view = MyView().asSwiftUIView()
+    func asSwiftUIView() -> some View {
+        SwiftUIView(view: self)
+    }
+    
+    /// Used to generically wrap a UIViewController in a SwiftUI View for previews
+    /// with size layout constraints
+    ///
+    ///     let view = MyView().asPreview( .zero )
     func asPreview( size: CGSize = .zero ) -> some View {
         if size == .zero {
-            return Preview(view: self)
+            return SwiftUIView(view: self)
                 .previewLayout( .sizeThatFits )
         }
         else {
-            return Preview(view: self)
+            return SwiftUIView(view: self)
                 .previewLayout( .fixed( width: size.width, height: size.height ) )
         }
     }
