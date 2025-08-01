@@ -19,6 +19,7 @@ enum AppError : LocalizedError {
     ///
     ///     .alert( isPresented: $showError, error: error ) { error in } message: { error in Text( error.failureReason ) }
     var errorDescription: String? { "Network Error" }
+    var localizedDescription: String { failureReason }
     
     var failureReason: String {
         switch self {
@@ -50,6 +51,11 @@ final public class NetworkManager {
     
     private init() {}
     
+    /// Performs a network request, and optionally can output the resulting JSON
+    ///
+    ///     let endpoint = "https://api.endpoint.com/config"
+    ///     let request = try URLRequest( .get, url: endpoint )
+    ///     let config: ConfigModel = try await network.perform( request )
     public func perform<T: Decodable>( _ request: URLRequest, outputJson: Bool = false ) async throws -> T {
         let basePath = request.url?.path ?? "Unknown"
         print( "\(request.httpMethod ?? "") > \(basePath)", module: .network )
@@ -57,14 +63,26 @@ final public class NetworkManager {
         let ( data, response ) = try await session.data( for: request )
         
         if outputJson { prettyPrint( data, for: basePath ) }
-
+        
         guard let response = response as? HTTPURLResponse else { throw AppError.invalidResponse }
         guard (200...299).contains( response.statusCode ) else { return try networkError( .invalidResponseStatus, message: "Status \(response.statusCode)" ) as! T }
         
         do { return try decode( from: data ) as T }
         catch { throw AppError.decodingError }
     }
-
+    
+    /// Loads a json file into a model from the project
+    ///
+    ///     let config: ConfigModel = try network.file( filename: "config" )
+    public func file<T:Decodable>( filename: String ) throws -> T {
+        guard let url = Bundle.main.url( forResource: filename, withExtension: "json" ) else { return try networkError( .invalidUrl ) as! T }
+        let basePath = url.lastPathComponent
+        print( "Load File > \(basePath)", module: .network )
+        guard let data = try? Data( contentsOf: url ) else { return try networkError( .invalidUrl ) as! T }
+        guard let response = try? decode( from: data ) as T else { return try networkError( .invalidUrl ) as! T }
+        return response
+    }
+    
     /// Parse out query items from a URL string
     public static func getQueryItems( from: String ) -> [URLQueryItem] {
         var queryItems = [URLQueryItem]()
@@ -75,11 +93,12 @@ final public class NetworkManager {
         }
         return queryItems
     }
+}
 
     // MARK: - Private
-    
+private extension NetworkManager {
     /// Common decoding function to keep call-site clean when performing requests
-    private func decode<T: Decodable>( from: Data ) throws -> T {
+    func decode<T: Decodable>( from: Data ) throws -> T {
         do {
             let decoder = JSONDecoder()
             decoder.dateDecodingStrategy = .iso8601
@@ -100,27 +119,29 @@ final public class NetworkManager {
     
     /// The idea is to have a throw loggedError( wrappedError, "Message" ) to have logging + throwing
     /// in one statement. Needs work
-    private func networkError( _ error: AppError, message: String = "" ) throws {
+    func networkError( _ error: AppError, message: String = "" ) throws {
         let info = message.isEmpty ? error.localizedDescription : message
         print( info, module: .networkError, level: .error )
         throw error
     }
     
     /// Parses items from response headers
-    private func parseStatus( response: HTTPURLResponse? ) {
+    func parseStatus( response: HTTPURLResponse? ) {
         //let mycode = response?.statusCode ?? 999
         //let mytoken: String = getStatusValue( in: response, for: "Token" )
         //let requestId = getStatusValue( in: response, for: "x-amzn-RequestId" )
         //return APIStatus( code: mycode, token: mytoken )
     }
+
     /// checks the header for variations of the key ( original, uppercased, lowercased )
-    private func getStatusValue( in response: HTTPURLResponse?, for key: String ) -> String {
+    func getStatusValue( in response: HTTPURLResponse?, for key: String ) -> String {
         let keys = [ key, key.lowercased(), key.uppercased() ]
         let values = keys.compactMap { response?.allHeaderFields[ $0 ] as? String }
         return values.first ?? ""
     }
     
-    private func prettyPrint( _ data: Data, for endpoint: String = "" ) {
+    /// Outputs json string from data
+    func prettyPrint( _ data: Data, for endpoint: String = "" ) {
         let prettyPrint = NSString( data: data, encoding: String.Encoding.utf8.rawValue ) ?? ""
         print( "\(endpoint) JSON Data: \(prettyPrint)", module: .network )
     }
