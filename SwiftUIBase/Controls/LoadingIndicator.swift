@@ -46,6 +46,20 @@ struct LoadingIndicator: ViewModifier {
             .transition( AnyTransition.opacity.animation( .easeInOut( duration: 0.2 ) ) )
     }
     
+    private var ellipsisView: some View {
+        Image( systemName: "ellipsis" )
+            .foregroundStyle( .white )
+            .font( .largeTitle.bold() )
+            .symbolEffect( .variableColor.iterative.hideInactiveLayers )
+            .background(
+                RoundedRectangle( cornerRadius: 16 )
+                    .foregroundStyle( .black.opacity( 0.7 ) )
+                    .frame( width: 120, height: 120 )
+            )
+            .ignoresSafeArea()
+            .transition( AnyTransition.opacity.animation( .easeInOut( duration: 0.2 ) ) )
+    }
+    
     private var symbolView: some View {
         // progress.indicator, gear, ellipsis, timelapse, aqi.low, aqi.medium
         Image( systemName: "aqi.medium" )
