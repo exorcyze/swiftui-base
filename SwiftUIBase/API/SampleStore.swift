@@ -14,6 +14,22 @@ struct GithubUser : Decodable {
     let avatarUrl : String
     
     static var empty = GithubUser( login: "", avatarUrl: "" )
+    static let json = """
+    {"login":"exorcyze","id":840552,"node_id":"MDQ6VXNlcjg0MDU1Mg==","avatar_url":"https://avatars.githubusercontent.com/u/840552?v=4","gravatar_id":"","url":"https://api.github.com/users/exorcyze","html_url":"https://github.com/exorcyze","followers_url":"https://api.github.com/users/exorcyze/followers","following_url":"https://api.github.com/users/exorcyze/following{/other_user}","gists_url":"https://api.github.com/users/exorcyze/gists{/gist_id}","starred_url":"https://api.github.com/users/exorcyze/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/exorcyze/subscriptions","organizations_url":"https://api.github.com/users/exorcyze/orgs","repos_url":"https://api.github.com/users/exorcyze/repos","events_url":"https://api.github.com/users/exorcyze/events{/privacy}","received_events_url":"https://api.github.com/users/exorcyze/received_events","type":"User","user_view_type":"public","site_admin":false,"name":null,"company":null,"blog":"","location":null,"email":null,"hireable":null,"bio":null,"twitter_username":null,"public_repos":3,"public_gists":10,"followers":9,"following":3,"created_at":"2011-06-09T18:01:56Z","updated_at":"2024-07-04T23:58:18Z"}
+    """
+}
+struct TestPhoto: Codable {
+    let albumId: Int
+    let id: Int
+    let title: String
+    let url: String
+    let thumbnailUrl: String
+}
+struct UserDataModel: Decodable {
+    let id: Int
+    let name: String
+    let username: String
+    let email: String
 }
 
 // MARK: - Sample Calls
@@ -42,18 +58,31 @@ class SampleDataStore {
         return try await network.perform( request )
     }
     
-    func urlBuilding() {
+    func getUser( userId: Int ) async throws -> UserDataModel {
+        let endpoint = "https://jsonplaceholder.typicode.com/users/\(userId)"
+        let request = try URLRequest( .get, url: endpoint )
+        return try await network.perform( request )
+    }
+
+    func getPhotos() async throws -> TestPhoto {
+        // endpoint has 5k results
+        let endpoint = "https://jsonplaceholder.typicode.com/photos"
+        print( "Request Started" )
+        let request = try URLRequest( .get, url: endpoint )
+        return try await network.perform( request )
+    }
+    
+    func urlBuilding() async throws -> GithubUser {
         let baseUrl = URL( string: "http://api.github.com" )!
         let url = baseUrl.appending( components: "users", "exorcyze" )
             .appending( queryItems: [ URLQueryItem( name: "refresh", value: "true" ) ] )
+        let request = try URLRequest( .get, url: url.absoluteString )
+        return try await network.perform( request )
     }
     
     func sampleDecode() {
-        let json = """
-        {"login":"exorcyze","id":840552,"node_id":"MDQ6VXNlcjg0MDU1Mg==","avatar_url":"https://avatars.githubusercontent.com/u/840552?v=4","gravatar_id":"","url":"https://api.github.com/users/exorcyze","html_url":"https://github.com/exorcyze","followers_url":"https://api.github.com/users/exorcyze/followers","following_url":"https://api.github.com/users/exorcyze/following{/other_user}","gists_url":"https://api.github.com/users/exorcyze/gists{/gist_id}","starred_url":"https://api.github.com/users/exorcyze/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/exorcyze/subscriptions","organizations_url":"https://api.github.com/users/exorcyze/orgs","repos_url":"https://api.github.com/users/exorcyze/repos","events_url":"https://api.github.com/users/exorcyze/events{/privacy}","received_events_url":"https://api.github.com/users/exorcyze/received_events","type":"User","user_view_type":"public","site_admin":false,"name":null,"company":null,"blog":"","location":null,"email":null,"hireable":null,"bio":null,"twitter_username":null,"public_repos":3,"public_gists":10,"followers":9,"following":3,"created_at":"2011-06-09T18:01:56Z","updated_at":"2024-07-04T23:58:18Z"}
-        """
         do {
-            let user = try GithubUser.decode( from: json )
+            let user = try GithubUser.decode( from: GithubUser.json )
             print( "User: \(user.avatarUrl)")
         } catch { }
     }
